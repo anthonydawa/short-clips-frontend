@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Short Clips AI — Autonomous Two-Agent Video Production & Studio</title>
+  <meta name="description" content="AI-directed short-form video generation pipeline and studio with Groq Whisper transcription, face tracking, dynamic zooms, high-contrast karaoke subtitles, and Supabase auth.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <!-- Favicon Icon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c3aed'><polygon points='23 7 16 12 23 17 23 7'/><rect x='1' y='5' width='15' height='14' rx='2' ry='2'/></svg>">
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- Navbar Mount Point -->
+    <header class="navbar" id="navbar-mount"></header>
+
+    <!-- Main Content Container -->
+    <main class="main-container">
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <div class="badge badge-purple" style="margin-bottom: 12px;">
+          ✨ AI-Powered Video Studio • Smart 9:16 Shorts Generation
+        </div>
+        <h1 class="hero-title">
+          Convert Long Videos into <span class="gradient-text">Viral 9:16 Shorts</span>
+        </h1>
+        <p class="hero-subtitle">
+          Turn long YouTube videos or uploads into captivating vertical shorts with automated scene detection, kinetic face-framing, and stylish karaoke subtitles.
+        </p>
+
+        <!-- Video Ingestion Mount Point -->
+        <div id="ingestion-mount"></div>
+      </section>
+
+      <!-- Real-Time Progress Tracker Mount Point -->
+      <div id="progress-mount"></div>
+
+      <!-- Studio Layout: 9:16 Phone Mockup Player & Caption Inspector -->
+      <section style="margin-top: 36px;">
+        <div class="studio-layout">
+          <!-- 9:16 Vertical Video Player Mount -->
+          <div id="player-mount"></div>
+
+          <!-- Caption Inspector & Virality Breakdown Mount -->
+          <div id="inspector-mount"></div>
+        </div>
+      </section>
+
+      <!-- 9:16 Clip Gallery Mount Point -->
+      <div id="studio-mount"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="border-top: 1px solid var(--border-glass); padding: 24px 20px; text-align: center; color: var(--text-muted); font-size: 13px; margin-top: auto;">
+      <div style="max-width: 1440px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div>Short Clips AI Studio • Built for Creators & Media Channels</div>
+        <div style="display: flex; gap: 16px; font-family: var(--font-mono); font-size: 12px;">
+          <span style="color: var(--accent-emerald);">● AI Engine Ready</span>
+          <span style="color: var(--accent-cyan);">● Auto-Framing Active</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal-backdrop" id="auth-modal"></div>
+  <div class="modal-backdrop" id="brand-modal"></div>
+  <div class="modal-backdrop" id="auditor-modal"></div>
+  <div class="modal-backdrop" id="analytics-modal"></div>
+
+
+
+  <!-- Main JavaScript Module -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
