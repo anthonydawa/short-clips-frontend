@@ -79,7 +79,7 @@ When your frontend runs on `https://yourdomain.com` and calls your backend on `h
    Make sure your frontend domain is in `cors_origins`:
    ```toml
    [server]
-   cors_origins = ["https://yourdomain.com", "http://localhost:3000"]
+   cors_origins = ["https://shoortclips.com", "https://www.shoortclips.com", "http://localhost:8000"]
    ```
 2. The frontend will now communicate seamlessly via:
    - REST API requests with Supabase JWT bearer tokens
