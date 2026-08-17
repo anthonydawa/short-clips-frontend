@@ -50,7 +50,8 @@ export async function initSupabase() {
           console.warn('Could not auto-load cloud analytics on login:', e);
         }
       } else {
-        state.setUser(null);
+        state.clearUserData();
+        document.querySelectorAll('.modal-backdrop').forEach((m) => m.classList.remove('active'));
       }
     });
 
@@ -176,9 +177,10 @@ export async function signOut() {
   if (supabaseClient) {
     await supabaseClient.auth.signOut();
   }
-  state.setUser(null);
+  state.clearUserData();
   localStorage.removeItem('shortclips_cloud_user');
   localStorage.removeItem('shortclips_dev_user');
+  document.querySelectorAll('.modal-backdrop').forEach((m) => m.classList.remove('active'));
 }
 
 /**
