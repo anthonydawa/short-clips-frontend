@@ -296,11 +296,19 @@ export function initBrandManager() {
   renderAuditorModal();
 
   window.addEventListener('OPEN_BRAND_MANAGER', () => {
+    if (!state.user) {
+      window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL'));
+      return;
+    }
     renderBrandModal();
     brandModal.classList.add('active');
   });
 
   window.addEventListener('OPEN_CHANNEL_AUDITOR', () => {
+    if (!state.user) {
+      window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL'));
+      return;
+    }
     renderAuditorModal();
     auditModal.classList.add('active');
   });
