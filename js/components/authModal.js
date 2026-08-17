@@ -102,7 +102,7 @@ export function initAuthModal() {
         }
         modalEl.classList.remove('active');
       } catch (err) {
-        alert('Google Sign-In Error: ' + err.message);
+        console.warn('Google Sign-In notice:', err.message);
       }
     });
 
@@ -116,7 +116,6 @@ export function initAuthModal() {
       try {
         if (isSignUpMode) {
           const user = await signUpWithEmail(email, pass);
-          alert('Account created successfully! You can now sign in or access your studio.');
           if (user) state.setUser(user);
         } else {
           const user = await signInWithEmail(email, pass);
@@ -124,7 +123,7 @@ export function initAuthModal() {
         }
         modalEl.classList.remove('active');
       } catch (err) {
-        alert((isSignUpMode ? 'Sign Up' : 'Sign In') + ' Error: ' + err.message);
+        console.warn((isSignUpMode ? 'Sign Up' : 'Sign In') + ' notice:', err.message);
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = isSignUpMode ? 'Create Studio Account' : 'Sign In to Studio';
