@@ -111,23 +111,7 @@ export const api = {
   // YouTube Channel OAuth Integration
   getYouTubeStatus: () => request('/api/v1/auth/youtube/status'),
   disconnectYouTubeChannel: () => request('/api/v1/auth/youtube/disconnect', { method: 'DELETE' }),
-  connectYouTubeChannel: async (userId = '') => {
-    const backend = CONFIG.BACKEND_URL;
-    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-
-    // If in production and backend is not set or not reached yet, alert gracefully
-    if (!isLocal && (!backend || backend.includes('yourdomain.com') || backend.includes('api.shoortclips.com'))) {
-      try {
-        const testRes = await fetch(`${backend}/api/v1/auth/youtube/status`, { method: 'GET', signal: AbortSignal.timeout(3000) });
-        if (!testRes.ok && testRes.status !== 401) {
-          throw new Error('Backend returned ' + testRes.status);
-        }
-      } catch (err) {
-        console.warn('Backend API is not reachable yet:', err);
-        return;
-      }
-    }
-
+  connectYouTubeChannel: (userId = '') => {
     const query = userId ? `?user_id=${encodeURIComponent(userId)}` : '';
     window.location.href = `${CONFIG.BACKEND_URL}/api/v1/auth/youtube/connect${query}`;
   },
