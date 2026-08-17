@@ -108,7 +108,7 @@ export function renderCaptionInspector(container) {
             copyBtn.innerHTML = orig;
           }, 2000);
         } catch (e) {
-          alert('Copied: ' + fullContent);
+          console.warn('Clipboard copy notice:', e);
         }
       });
     }
@@ -121,12 +121,15 @@ export function renderCaptionInspector(container) {
         syncBtn.innerHTML = '⏳ Syncing...';
         try {
           const res = await api.syncStorage(activeJob.video_id);
-          alert('Cloudflare R2 Sync Complete! ' + (res.message || ''));
+          syncBtn.innerHTML = '✅ Synced!';
+          setTimeout(() => {
+            syncBtn.innerHTML = 'Sync R2';
+          }, 2000);
         } catch (e) {
-          alert('R2 Sync Error: ' + e.message);
+          console.warn('R2 Sync notice:', e.message);
+          syncBtn.innerHTML = 'Sync R2';
         } finally {
           syncBtn.disabled = false;
-          syncBtn.innerHTML = 'Sync R2';
         }
       });
     }
