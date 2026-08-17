@@ -111,6 +111,21 @@ class AppState {
     this.isProcessing = false;
     this.notify('PROGRESS_RESET', this.progress);
   }
+
+  clearUserData() {
+    this.user = null;
+    this.brands = [];
+    this.activeBrandId = null;
+    this.jobs = [];
+    this.activeJob = null;
+    this.clips = [];
+    this.selectedClip = null;
+    this.resetProgress();
+    this.notify('USER_CHANGED', null);
+    this.notify('BRANDS_UPDATED', []);
+    this.notify('CLIPS_UPDATED', []);
+    this.notify('SELECTED_CLIP_CHANGED', null);
+  }
 }
 
 export const state = new AppState();
