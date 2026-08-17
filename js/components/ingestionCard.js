@@ -271,7 +271,7 @@ export function renderIngestionCard(container) {
         // Scroll to progress card
         document.getElementById('progress-section')?.scrollIntoView({ behavior: 'smooth' });
       } catch (err) {
-        alert('Failed to submit job: ' + err.message);
+        console.warn('Job submission notice:', err.message);
         state.updateProgress('FAILED', 0, 'Error: ' + err.message, true);
       } finally {
         isSubmitting = false;
