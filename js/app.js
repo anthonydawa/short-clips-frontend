@@ -44,7 +44,7 @@ async function bootstrap() {
   if (playerMount) renderVerticalPlayer(playerMount);
   if (inspectorMount) renderCaptionInspector(inspectorMount);
 
-  // 4. Fetch Brands and Recent Jobs (Cloud First -> Local Backend Fallback)
+  // 4. Fetch Brand Profiles (Cloud First -> Local Fallback)
   try {
     let brands = [];
     if (currentUser?.user_id) {
@@ -58,23 +58,6 @@ async function bootstrap() {
     }
   } catch (err) {
     console.warn('Could not fetch brands from cloud or API:', err);
-  }
-
-  try {
-    const jobs = await api.getJobs();
-    state.setJobs(jobs);
-
-    // If there is an existing completed job, load its clips into the studio
-    if (jobs && jobs.length > 0) {
-      const latestJob = jobs[0];
-      state.setActiveJob(latestJob);
-      const detail = await api.getJobDetail(latestJob.video_id);
-      if (detail && detail.clips && detail.clips.length > 0) {
-        state.setClips(detail.clips);
-      }
-    }
-  } catch (err) {
-    console.warn('Could not fetch jobs from API:', err);
   }
 
   console.log('✨ Short Clips AI Web App ready!');
