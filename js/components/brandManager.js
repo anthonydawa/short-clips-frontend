@@ -11,22 +11,30 @@ export function initBrandManager() {
   const auditModal = document.getElementById('auditor-modal');
   if (!brandModal || !auditModal) return;
 
-  // 1. Render Brand Management Modal
+  // 1. Render Single Brand Profile Modal
   function renderBrandModal() {
-    const brands = state.brands;
-    const activeBrandId = state.activeBrandId;
+    const brand = state.getActiveBrand() || {
+      brand_id: 'default_brand',
+      brand_name: 'My Brand',
+      channel_url: '',
+      niche: 'Creator & Media',
+      subtitle_preset: 'HORMOZI_BOLD',
+      target_audience: '',
+      mandatory_cta: '',
+      director_system_prompt: '',
+    };
 
     brandModal.innerHTML = `
-      <div class="modal-card" style="max-width: 680px;">
+      <div class="modal-card" style="max-width: 580px;">
         <div class="modal-header">
           <div style="display: flex; align-items: center; gap: 10px;">
-            <div class="logo-icon" style="width: 32px; height: 32px;">
+            <div class="logo-icon" style="width: 32px; height: 32px; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
             </div>
-            <h3 style="font-size: 20px;">Brand Profiles & Directing Presets</h3>
+            <h3 style="font-size: 20px;">Brand Profile & Directing Presets</h3>
           </div>
           <button id="btn-close-brand-modal" class="btn btn-ghost btn-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -36,72 +44,60 @@ export function initBrandManager() {
           </button>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px;">
-          <!-- Create / Edit Brand Form -->
-          <form id="brand-form" style="display: flex; flex-direction: column; gap: 12px;">
-            <h4 style="font-size: 14px; font-weight: 700; color: var(--text-primary);">Create / Edit Brand</h4>
-            
+        <form id="brand-form" style="display: flex; flex-direction: column; gap: 14px; margin-top: 10px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             <div class="setting-item">
-              <label class="setting-label">Brand Name</label>
-              <input type="text" id="bm-name" placeholder="e.g. Acme Media" required>
+              <label class="setting-label">Brand / Channel Name</label>
+              <input type="text" id="bm-name" value="${brand.brand_name || ''}" placeholder="e.g. My Brand" required>
             </div>
 
             <div class="setting-item">
               <label class="setting-label">YouTube Channel URL</label>
-              <input type="url" id="bm-channel" placeholder="https://youtube.com/@handle">
+              <input type="url" id="bm-channel" value="${brand.channel_url || ''}" placeholder="https://youtube.com/@handle">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="setting-item">
+              <label class="setting-label">Niche / Industry</label>
+              <input type="text" id="bm-niche" value="${brand.niche || ''}" placeholder="Finance, Fitness, Tech...">
             </div>
 
             <div class="setting-item">
-              <label class="setting-label">Niche / Category</label>
-              <input type="text" id="bm-niche" placeholder="Finance, Fitness, Tech...">
-            </div>
-
-            <div class="setting-item">
-              <label class="setting-label">Caption Style Preset</label>
+              <label class="setting-label">Default Caption Style</label>
               <select id="bm-preset">
-                <option value="HORMOZI_BOLD">Hormozi Bold (Gold/Cyan)</option>
-                <option value="MINIMAL_CLEAN">Minimal Clean (White Glow)</option>
-                <option value="BEAST_KINETIC">MrBeast Kinetic (High Impact)</option>
+                <option value="HORMOZI_BOLD" ${brand.subtitle_preset === 'HORMOZI_BOLD' || brand.subtitle_preset === 'hormozi' ? 'selected' : ''}>🔥 Hormozi Bold (Electric Yellow)</option>
+                <option value="MINIMAL_CLEAN" ${brand.subtitle_preset === 'MINIMAL_CLEAN' || brand.subtitle_preset === 'clean' ? 'selected' : ''}>✨ Clean (Minimal Neon Cyan)</option>
+                <option value="BEAST_KINETIC" ${brand.subtitle_preset === 'BEAST_KINETIC' || brand.subtitle_preset === 'beast' ? 'selected' : ''}>🏆 Beast Kinetic (High Impact)</option>
+                <option value="TECH_MATRIX" ${brand.subtitle_preset === 'TECH_MATRIX' || brand.subtitle_preset === 'tech' ? 'selected' : ''}>⚡ Tech Monospace</option>
               </select>
             </div>
+          </div>
 
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             <div class="setting-item">
               <label class="setting-label">Target Audience</label>
-              <input type="text" id="bm-audience" placeholder="Founders, creators, beginners">
+              <input type="text" id="bm-audience" value="${brand.target_audience || ''}" placeholder="e.g. Founders, students, fitness lovers">
             </div>
 
             <div class="setting-item">
-              <label class="setting-label">Mandatory CTA</label>
-              <input type="text" id="bm-cta" placeholder="Follow for daily tips">
+              <label class="setting-label">Mandatory CTA (Call to Action)</label>
+              <input type="text" id="bm-cta" value="${brand.mandatory_cta || ''}" placeholder="e.g. Link in bio / Subscribe for more">
             </div>
-
-            <div class="setting-item">
-              <label class="setting-label">AI Director Prompt Override</label>
-              <textarea id="bm-prompt" rows="3" placeholder="Emphasize raw contrarian insights and snappy cuts..."></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary" style="margin-top: 6px;">
-              Save Brand Profile
-            </button>
-          </form>
-
-          <!-- Existing Brands List -->
-          <div style="border-left: 1px solid var(--border-glass); padding-left: 20px; display: flex; flex-direction: column; gap: 10px;">
-            <h4 style="font-size: 14px; font-weight: 700; color: var(--text-primary);">Saved Profiles</h4>
-            ${brands.length === 0 ? '<div style="color: var(--text-muted); font-size: 13px;">No brand profiles yet.</div>' : ''}
-            ${brands.map((b) => `
-              <div style="background: rgba(255,255,255,0.03); border: 1px solid ${b.brand_id === activeBrandId ? 'var(--primary)' : 'var(--border-glass)'}; border-radius: var(--radius-sm); padding: 10px 12px; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                  <div style="font-weight: 700; font-size: 14px; color: ${b.brand_id === activeBrandId ? 'var(--primary)' : 'var(--text-primary)'};">${b.brand_name}</div>
-                  <div style="font-size: 11px; color: var(--text-muted);">${b.niche || 'General'} • ${b.subtitle_preset || 'HORMOZI'}</div>
-                </div>
-                <button class="btn btn-sm btn-select-brand ${b.brand_id === activeBrandId ? 'btn-primary' : 'btn-ghost'}" data-id="${b.brand_id}">
-                  ${b.brand_id === activeBrandId ? 'Active' : 'Select'}
-                </button>
-              </div>
-            `).join('')}
           </div>
-        </div>
+
+          <div class="setting-item">
+            <label class="setting-label">AI Directing System Prompt Override (Optional)</label>
+            <textarea id="bm-prompt" rows="2" placeholder="Custom AI instructions to steer video pacing, hook detection, and clip selection...">${brand.director_system_prompt || ''}</textarea>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px;">
+            <button type="button" id="btn-cancel-brand" class="btn btn-secondary btn-sm">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm" style="padding: 8px 18px;">
+              💾 Save Brand Profile
+            </button>
+          </div>
+        </form>
       </div>
     `;
 
@@ -109,53 +105,41 @@ export function initBrandManager() {
       brandModal.classList.remove('active');
     });
 
-    brandModal.querySelectorAll('.btn-select-brand').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-id');
-        state.setActiveBrand(id);
-        renderBrandModal(); // Re-render to update active styling
-      });
+    brandModal.querySelector('#btn-cancel-brand').addEventListener('click', () => {
+      brandModal.classList.remove('active');
     });
 
     brandModal.querySelector('#brand-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const payload = {
-        brand_name: brandModal.querySelector('#bm-name').value,
-        channel_url: brandModal.querySelector('#bm-channel').value,
-        niche: brandModal.querySelector('#bm-niche').value,
+      const updatedBrand = {
+        brand_id: brand.brand_id || `brand_${Date.now()}`,
+        brand_name: brandModal.querySelector('#bm-name').value.trim() || 'My Brand',
+        channel_url: brandModal.querySelector('#bm-channel').value.trim(),
+        niche: brandModal.querySelector('#bm-niche').value.trim(),
         subtitle_preset: brandModal.querySelector('#bm-preset').value,
-        target_audience: brandModal.querySelector('#bm-audience').value,
-        mandatory_cta: brandModal.querySelector('#bm-cta').value,
-        director_system_prompt: brandModal.querySelector('#bm-prompt').value,
+        target_audience: brandModal.querySelector('#bm-audience').value.trim(),
+        mandatory_cta: brandModal.querySelector('#bm-cta').value.trim(),
+        director_system_prompt: brandModal.querySelector('#bm-prompt').value.trim(),
         pacing_mode: 'snappy',
         remove_dead_space: true,
         enable_sfx: false,
         enable_top_banner: false,
+        is_default: true,
       };
 
       try {
-        let created = null;
+        // Try backend create / update
         try {
-          created = await api.createBrand(payload);
+          await api.createBrand(updatedBrand);
         } catch (apiErr) {
-          console.warn('Backend brand create notice:', apiErr.message);
-          created = { ...payload, brand_id: `brand_${Date.now()}` };
+          console.warn('Backend brand sync notice:', apiErr.message);
         }
 
         // Sync to cloud Supabase profile
-        await syncBrandToSupabase(created);
+        await syncBrandToSupabase(updatedBrand);
 
-        let updatedBrands = [];
-        try {
-          updatedBrands = await api.getBrands();
-        } catch (e) {
-          const user = state.user;
-          const key = `shortclips_brands_${user?.user_id || 'dev_user'}`;
-          updatedBrands = JSON.parse(localStorage.getItem(key) || '[]');
-        }
-
-        state.setBrands(updatedBrands.length > 0 ? updatedBrands : [created]);
-        state.setActiveBrand(created.brand_id);
+        state.setBrands([updatedBrand]);
+        state.setActiveBrand(updatedBrand.brand_id);
         brandModal.classList.remove('active');
       } catch (err) {
         console.warn('Failed to save brand:', err.message);
@@ -263,27 +247,34 @@ export function initBrandManager() {
     applyBtn.addEventListener('click', async () => {
       if (!lastAuditResult) return;
       try {
-        let created = null;
+        const existingBrand = state.getActiveBrand();
+        const appliedBrand = {
+          brand_id: existingBrand?.brand_id || `brand_${Date.now()}`,
+          brand_name: lastAuditResult.brand_name || 'Audited Brand',
+          channel_url: auditedChannelUrl || lastAuditResult.channel_url || '',
+          niche: lastAuditResult.niche || '',
+          subtitle_preset: lastAuditResult.subtitle_preset || 'HORMOZI_BOLD',
+          target_audience: lastAuditResult.target_audience || '',
+          mandatory_cta: lastAuditResult.mandatory_cta || '',
+          director_system_prompt: lastAuditResult.director_system_prompt || '',
+          pacing_mode: 'snappy',
+          remove_dead_space: true,
+          enable_sfx: false,
+          enable_top_banner: false,
+          is_default: true,
+        };
+
         try {
-          created = await api.createBrand(lastAuditResult);
+          await api.createBrand(appliedBrand);
         } catch (apiErr) {
-          created = { ...lastAuditResult, brand_id: `brand_${Date.now()}` };
+          console.warn('Backend brand sync notice:', apiErr.message);
         }
 
         // Sync to cloud Supabase
-        await syncBrandToSupabase(created);
+        await syncBrandToSupabase(appliedBrand);
 
-        let updatedBrands = [];
-        try {
-          updatedBrands = await api.getBrands();
-        } catch (e) {
-          const user = state.user;
-          const key = `shortclips_brands_${user?.user_id || 'dev_user'}`;
-          updatedBrands = JSON.parse(localStorage.getItem(key) || '[]');
-        }
-
-        state.setBrands(updatedBrands.length > 0 ? updatedBrands : [created]);
-        state.setActiveBrand(created.brand_id);
+        state.setBrands([appliedBrand]);
+        state.setActiveBrand(appliedBrand.brand_id);
         auditModal.classList.remove('active');
       } catch (err) {
         console.warn('Error saving audited brand:', err.message);
