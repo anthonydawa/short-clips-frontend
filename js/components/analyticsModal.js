@@ -230,6 +230,10 @@ export function initAnalyticsModal() {
   }
 
   window.addEventListener('OPEN_ANALYTICS', () => {
+    if (!state.user) {
+      window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL'));
+      return;
+    }
     render();
     modalEl.classList.add('active');
   });
