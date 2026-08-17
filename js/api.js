@@ -93,8 +93,20 @@ export const api = {
   // Storage & Analytics
   getStorageHealth: () => request('/api/v1/storage/health'),
   syncStorage: (videoId) => request(`/api/v1/storage/sync/${videoId}`, { method: 'POST' }),
-  getAnalyticsOverview: () => request('/api/v1/analytics/overview'),
-  syncAnalytics: () => request('/api/v1/analytics/sync', { method: 'POST' }),
+  getAnalyticsOverview: async () => {
+    try {
+      return await request('/api/v1/analytics/overview');
+    } catch (e) {
+      return await request('/api/v1/auth/youtube/analytics');
+    }
+  },
+  syncAnalytics: async () => {
+    try {
+      return await request('/api/v1/analytics/sync', { method: 'POST' });
+    } catch (e) {
+      return await request('/api/v1/auth/youtube/sync', { method: 'POST' });
+    }
+  },
 
   // YouTube Channel OAuth Integration
   getYouTubeStatus: () => request('/api/v1/auth/youtube/status'),
