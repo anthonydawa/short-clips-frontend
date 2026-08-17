@@ -128,10 +128,9 @@ export function initAnalyticsModal() {
           const res = await api.syncAnalytics();
           const freshOverview = await api.getAnalyticsOverview();
           await syncAnalyticsToSupabase(freshOverview, currentYtProfile);
-          alert(res.message || 'Synced successfully to your profile!');
           render();
         } catch (err) {
-          alert('Sync Error: ' + err.message);
+          console.warn('Analytics sync notice:', err.message);
         } finally {
           if (ytSyncBtn) {
             ytSyncBtn.disabled = false;
