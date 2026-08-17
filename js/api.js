@@ -123,7 +123,7 @@ export const api = {
           throw new Error('Backend returned ' + testRes.status);
         }
       } catch (err) {
-        alert('⚠️ Backend API is not deployed yet. Once your Python API is hosted and connected in js/config.js, YouTube Channel OAuth will link automatically!');
+        console.warn('Backend API is not reachable yet:', err);
         return;
       }
     }
