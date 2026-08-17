@@ -32,10 +32,8 @@ export const CONFIG = {
       return 'http://localhost:8000';
     }
 
-    // 🚀 PRODUCTION BACKEND URL
-    // Replace with your Google Cloud Run service URL or custom domain:
-    // e.g. 'https://shortclips-api-xyz-uc.a.run.app' or 'https://api.shoortclips.com'
-    return 'https://api.shoortclips.com';
+    // 🚀 PRODUCTION BACKEND URL (Google Cloud Run API)
+    return 'https://shoortclips-api-271178976043.us-central1.run.app';
   },
 
   // WebSocket Base URL (Automatically converts http/https to ws/wss)
