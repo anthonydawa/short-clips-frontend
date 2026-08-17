@@ -14,12 +14,69 @@ export function renderClipStudio(container) {
     if (!clips || clips.length === 0) {
       container.innerHTML = `
         <div class="studio-section" id="studio-section">
-          <div class="glass-panel" style="padding: 48px 24px; text-align: center;">
-            <div style="font-size: 40px; margin-bottom: 12px;">🎬</div>
-            <h3 style="font-size: 20px; margin-bottom: 8px;">No Short Clips Generated Yet</h3>
-            <p style="color: var(--text-muted); font-size: 14px; max-width: 460px; margin: 0 auto 20px;">
-              Enter a YouTube link or upload a horizontal video above to let the Two-Agent AI director craft viral 9:16 shorts.
-            </p>
+          <div class="section-header" style="margin-bottom: 20px;">
+            <div>
+              <div class="badge badge-purple" style="margin-bottom: 6px;">✨ Creative Inspiration</div>
+              <h2 style="font-size: 26px;">Viral 9:16 Short Formats</h2>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 28px;">
+            <!-- Format 1 -->
+            <div class="glass-panel" style="padding: 20px; border-left: 3px solid #eab308; background: rgba(15, 23, 42, 0.6);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="font-size: 24px;">🔥</span>
+                <span class="badge badge-yellow">Hormozi Kinetic</span>
+              </div>
+              <div style="font-weight: 700; font-size: 15px; margin-bottom: 6px;">Bold Contrast & High Energy</div>
+              <div style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+                High-impact yellow & green word-by-word highlights, rapid micro-zooms, and sub-0.2s pause cuts.
+              </div>
+            </div>
+
+            <!-- Format 2 -->
+            <div class="glass-panel" style="padding: 20px; border-left: 3px solid #06b6d4; background: rgba(15, 23, 42, 0.6);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="font-size: 24px;">⚡</span>
+                <span class="badge badge-cyan">Clean Neon</span>
+              </div>
+              <div style="font-weight: 700; font-size: 15px; margin-bottom: 6px;">Minimal & Sleek Tech</div>
+              <div style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+                Clean sans-serif fonts, cyan accents, subtle smooth zooms, and aesthetic dark padding.
+              </div>
+            </div>
+
+            <!-- Format 3 -->
+            <div class="glass-panel" style="padding: 20px; border-left: 3px solid #a855f7; background: rgba(15, 23, 42, 0.6);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="font-size: 24px;">🧠</span>
+                <span class="badge badge-purple">Contrarian Hook</span>
+              </div>
+              <div style="font-weight: 700; font-size: 15px; margin-bottom: 6px;">Epiphany & Storytelling</div>
+              <div style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+                Hooks viewers in the first 2 seconds with an unexpected realization or counter-intuitive principle.
+              </div>
+            </div>
+
+            <!-- Format 4 -->
+            <div class="glass-panel" style="padding: 20px; border-left: 3px solid #10b981; background: rgba(15, 23, 42, 0.6);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="font-size: 24px;">🏆</span>
+                <span class="badge badge-emerald">Beast Impact</span>
+              </div>
+              <div style="font-weight: 700; font-size: 15px; margin-bottom: 6px;">Maximum Hook & Pacing</div>
+              <div style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+                Ultra-fast pacing, dynamic emojis, sound-effect markers, and high-retention 30-second arcs.
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-panel" style="padding: 32px 20px; text-align: center; border: 1px dashed var(--border-glass-glow);">
+            <div style="font-size: 36px; margin-bottom: 8px;">🎬</div>
+            <div style="font-weight: 700; font-size: 16px; margin-bottom: 6px;">Ready to generate your own shorts?</div>
+            <div style="color: var(--text-muted); font-size: 13px; max-width: 480px; margin: 0 auto;">
+              Paste a YouTube video link or upload a video file above. Your custom-directed 9:16 clips will appear here automatically.
+            </div>
           </div>
         </div>
       `;
