@@ -158,7 +158,7 @@ export function initBrandManager() {
         state.setActiveBrand(created.brand_id);
         brandModal.classList.remove('active');
       } catch (err) {
-        alert('Failed to save brand: ' + err.message);
+        console.warn('Failed to save brand:', err.message);
       }
     });
   }
@@ -253,7 +253,7 @@ export function initBrandManager() {
         // Save audit snapshot to Supabase
         await syncAuditToSupabase(result, channelUrl, context);
       } catch (err) {
-        alert('Channel Audit Failed: ' + err.message);
+        console.warn('Channel Audit notice:', err.message);
       } finally {
         btn.disabled = false;
         btn.innerHTML = 'Run AI Channel Audit 🔍';
@@ -285,9 +285,8 @@ export function initBrandManager() {
         state.setBrands(updatedBrands.length > 0 ? updatedBrands : [created]);
         state.setActiveBrand(created.brand_id);
         auditModal.classList.remove('active');
-        alert('Brand profile created and activated!');
       } catch (err) {
-        alert('Error saving audited brand: ' + err.message);
+        console.warn('Error saving audited brand:', err.message);
       }
     });
   }
