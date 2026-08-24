@@ -261,7 +261,7 @@ async function loadWorkspaceRecords(currentUser) {
 
 function hydrateSignupWorkspace(currentUser) {
   let pilot = {};
-  try { pilot = JSON.parse(localStorage.getItem('shoort_clips_pilot') || '{}'); } catch (error) {}
+  try { pilot = JSON.parse(localStorage.getItem('shoort_clips_signup') || localStorage.getItem('shoort_clips_pilot') || '{}'); } catch (error) {}
   const metadata = currentUser?.user_metadata || {};
   const brandName = pilot.company || metadata.company || metadata.name || currentUser?.email?.split('@')[0];
   const channelUrl = pilot.channel_url || metadata.channel_url || '';
