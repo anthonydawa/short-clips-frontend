@@ -57,18 +57,12 @@ export function initBrandManager() {
             </div>
           </div>
 
-          <div class="brand-field-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="brand-field-grid single-field" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             <div class="setting-item">
               <label class="setting-label">Industry or topic</label>
               <input type="text" id="bm-niche" value="${brand.niche || ''}" placeholder="Finance, Fitness, Tech...">
             </div>
 
-            <div class="setting-item">
-              <label class="setting-label">Default caption style</label>
-              <select id="bm-preset">
-                <option value="clean" selected>Shoort Clips — Clean emphasis</option>
-              </select>
-            </div>
           </div>
 
           <div class="brand-field-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
@@ -113,7 +107,8 @@ export function initBrandManager() {
         brand_name: brandModal.querySelector('#bm-name').value.trim() || 'My Brand',
         channel_url: brandModal.querySelector('#bm-channel').value.trim(),
         niche: brandModal.querySelector('#bm-niche').value.trim(),
-        subtitle_preset: brandModal.querySelector('#bm-preset').value,
+        // Keep the API payload compatible while caption styling is not user-configurable.
+        subtitle_preset: 'clean',
         target_audience: brandModal.querySelector('#bm-audience').value.trim(),
         mandatory_cta: brandModal.querySelector('#bm-cta').value.trim(),
         director_system_prompt: brandModal.querySelector('#bm-prompt').value.trim(),

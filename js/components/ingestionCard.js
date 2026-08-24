@@ -109,14 +109,6 @@ export function renderIngestionCard(container) {
                 <input type="range" id="cfg-clip-count" min="1" max="15" value="5" style="accent-color: var(--primary);">
               </div>
 
-              <!-- Subtitle Preset -->
-              <div class="setting-item">
-                <label class="setting-label">Caption style</label>
-                <select id="cfg-subtitle-preset">
-                  <option value="clean" selected>Shoort Clips — Clean emphasis</option>
-                </select>
-              </div>
-
               <!-- Pacing Mode -->
               <div class="setting-item">
                 <label class="setting-label">Editing pace</label>
@@ -241,7 +233,7 @@ export function renderIngestionCard(container) {
 
       const brandId = state.activeBrandId || undefined;
       const clipCount = parseInt(container.querySelector('#cfg-clip-count').value, 10);
-      const subtitlePreset = container.querySelector('#cfg-subtitle-preset').value;
+      const subtitlePreset = 'clean';
       const pacingMode = container.querySelector('#cfg-pacing-mode').value;
       const removeDeadSpace = container.querySelector('#cfg-dead-space').checked;
       const enableSfx = container.querySelector('#cfg-sfx').checked;

@@ -58,7 +58,7 @@ export const CONFIG = {
   // 3. PIPELINE PRESETS & DEFAULTS
   // ==========================================
   // Keep caption controls intentionally simple while the editing API is being connected.
-  SUBTITLE_PRESETS: ['clean'],
+  SUBTITLE_PRESETS: [],
   PACING_MODES: ['snappy', 'hyper', 'natural', 'cinematic'],
   CROP_MODES: ['auto_track', 'center', 'left', 'right'],
   DEFAULT_CLIP_COUNT: 5,
