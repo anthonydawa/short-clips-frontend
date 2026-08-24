@@ -13,8 +13,6 @@ export function renderIngestionCard(container) {
 
   function render() {
     const activeBrand = state.getActiveBrand();
-    const defaultPreset = 'clean';
-    const defaultPacing = activeBrand?.pacing_mode || 'snappy';
     const submitLabel = !state.user
       ? 'Sign in to generate clips'
       : !activeBrand
@@ -95,7 +93,7 @@ export function renderIngestionCard(container) {
                   <circle cx="12" cy="12" r="3"></circle>
                   <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                 </svg>
-                Clip settings <span class="drawer-optional">Optional</span>
+                Clip plan <span class="drawer-optional">Optional</span>
               </div>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="drawer-arrow">
                 <polyline points="6 9 12 15 18 9"></polyline>
@@ -103,43 +101,16 @@ export function renderIngestionCard(container) {
             </div>
 
             <div class="drawer-content" id="drawer-content" style="display: none;">
-              <!-- Target Clip Count -->
-              <div class="setting-item">
-                <label class="setting-label">Target Clips: <span id="val-clip-count" style="color: var(--primary); font-weight: 800;">5</span></label>
-                <input type="range" id="cfg-clip-count" min="1" max="15" value="5" style="accent-color: var(--primary);">
+              <div class="setting-item setting-item-count">
+                <label class="setting-label">Target clips <span id="val-clip-count">5</span></label>
+                <p class="setting-help">How many moments should the agent find?</p>
+                <input type="range" id="cfg-clip-count" min="1" max="15" value="5">
               </div>
 
-              <!-- Pacing Mode -->
-              <div class="setting-item">
-                <label class="setting-label">Editing pace</label>
-                <select id="cfg-pacing-mode">
-                  <option value="snappy" ${defaultPacing === 'snappy' ? 'selected' : ''}>Quick and engaging</option>
-                  <option value="hyper">Fast cuts</option>
-                  <option value="natural">Natural conversation</option>
-                  <option value="cinematic">Story-led</option>
-                </select>
-              </div>
-
-              <!-- Toggles -->
-              <div class="setting-item" style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
-                <div class="toggle-item">
-                  <label for="cfg-dead-space" style="font-size: 13px; font-weight: 600; cursor: pointer;">Remove long pauses</label>
-                  <input type="checkbox" id="cfg-dead-space" checked style="width: auto; accent-color: var(--primary);">
-                </div>
-                <div class="toggle-item">
-                  <label for="cfg-sfx" style="font-size: 13px; font-weight: 600; cursor: pointer;">Add subtle sound effects</label>
-                  <input type="checkbox" id="cfg-sfx" style="width: auto; accent-color: var(--primary);">
-                </div>
-                <div class="toggle-item">
-                  <label for="cfg-top-banner" style="font-size: 13px; font-weight: 600; cursor: pointer;">Add an opening headline</label>
-                  <input type="checkbox" id="cfg-top-banner" style="width: auto; accent-color: var(--primary);">
-                </div>
-              </div>
-
-              <!-- Custom Directing Instructions -->
-              <div class="setting-item" style="grid-column: 1 / -1;">
-                <label class="setting-label">Direction for this video <span>(optional)</span></label>
-                <textarea id="cfg-custom-instructions" rows="2" placeholder="Example: Prioritize practical lessons and customer stories. Avoid inside jokes."></textarea>
+              <div class="setting-item setting-item-direction">
+                <label class="setting-label">Direction for this video <span>Optional</span></label>
+                <p class="setting-help">Give the agent a focus for this edit.</p>
+                <textarea id="cfg-custom-instructions" rows="2" placeholder="Example: Prioritize practical lessons and customer stories."></textarea>
               </div>
             </div>
           </div>
@@ -231,10 +202,6 @@ export function renderIngestionCard(container) {
       const brandId = state.activeBrandId || undefined;
       const clipCount = parseInt(container.querySelector('#cfg-clip-count').value, 10);
       const subtitlePreset = 'clean';
-      const pacingMode = container.querySelector('#cfg-pacing-mode').value;
-      const removeDeadSpace = container.querySelector('#cfg-dead-space').checked;
-      const enableSfx = container.querySelector('#cfg-sfx').checked;
-      const enableTopBanner = container.querySelector('#cfg-top-banner').checked;
       const customInstructions = container.querySelector('#cfg-custom-instructions').value;
 
       // Capture settings before the loading render replaces the form controls.
@@ -253,10 +220,6 @@ export function renderIngestionCard(container) {
             brand_id: brandId,
             target_clip_count: clipCount,
             subtitle_preset: subtitlePreset,
-            pacing_mode: pacingMode,
-            remove_dead_space: removeDeadSpace,
-            enable_sfx: enableSfx,
-            enable_top_banner: enableTopBanner,
             custom_instructions: customInstructions,
           });
         } else {
@@ -265,10 +228,6 @@ export function renderIngestionCard(container) {
           if (brandId) formData.append('brand_id', brandId);
           formData.append('target_clip_count', clipCount);
           formData.append('subtitle_preset', subtitlePreset);
-          formData.append('pacing_mode', pacingMode);
-          formData.append('remove_dead_space', removeDeadSpace);
-          formData.append('enable_sfx', enableSfx);
-          formData.append('enable_top_banner', enableTopBanner);
           if (customInstructions) formData.append('custom_instructions', customInstructions);
           result = await api.uploadVideo(formData);
         }
