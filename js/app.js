@@ -41,8 +41,6 @@ function initWorkspaceNavigation() {
 
   document.querySelector('#side-brand')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_BRAND_MANAGER')));
   document.querySelector('#workspace-brand-button')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_BRAND_MANAGER')));
-  document.querySelector('#side-audit')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_CHANNEL_AUDITOR')));
-  document.querySelector('#start-channel-audit')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_CHANNEL_AUDITOR')));
   document.querySelector('#side-analytics')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_ANALYTICS')));
   document.querySelector('#sidebar-account-action')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL')));
 

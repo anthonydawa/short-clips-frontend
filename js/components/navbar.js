@@ -34,13 +34,11 @@ export function renderNavbar(container) {
       <div class="navbar-container">
         <div class="topbar-copy"><h2>Growth workspace</h2><p>Agent status: ${agentStatus}</p></div>
         <div class="nav-actions">
-          <button class="topbar-tool" id="btn-quick-auditor" title="Review your channel and find content gaps"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4"></circle><path d="m16 16 4.2 4.2"></path></svg><span>Channel audit</span></button>
           <button class="topbar-tool" id="btn-open-analytics" title="View channel analytics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17V7m0 10h14M8 14l3-3 2 2 5-6"></path></svg><span>Analytics</span></button>
           ${accountControl}
         </div>
       </div>`;
 
-    container.querySelector('#btn-quick-auditor')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_CHANNEL_AUDITOR')));
     container.querySelector('#btn-open-analytics')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_ANALYTICS')));
     container.querySelector('#btn-open-auth')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL')));
     container.querySelector('#btn-auth-logout')?.addEventListener('click', async () => { await signOut(); state.setUser(null); });
