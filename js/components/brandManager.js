@@ -65,21 +65,9 @@ export function initBrandManager() {
 
           </div>
 
-          <div class="brand-field-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-            <div class="setting-item">
-              <label class="setting-label">Target audience</label>
-              <input type="text" id="bm-audience" value="${brand.target_audience || ''}" placeholder="e.g. Founders, students, fitness lovers">
-            </div>
-
-            <div class="setting-item">
-              <label class="setting-label">Default call to action</label>
-              <input type="text" id="bm-cta" value="${brand.mandatory_cta || ''}" placeholder="e.g. Link in bio / Subscribe for more">
-            </div>
-          </div>
-
           <div class="setting-item">
-            <label class="setting-label">Agent instructions <span>(optional)</span></label>
-            <textarea id="bm-prompt" rows="2" placeholder="Describe what the agent should prioritize or avoid when selecting clips.">${brand.director_system_prompt || ''}</textarea>
+            <label class="setting-label">Target audience</label>
+            <input type="text" id="bm-audience" value="${brand.target_audience || ''}" placeholder="e.g. Founders, students, fitness lovers">
           </div>
 
           <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px;">
@@ -110,8 +98,8 @@ export function initBrandManager() {
         // Keep the API payload compatible while caption styling is not user-configurable.
         subtitle_preset: 'clean',
         target_audience: brandModal.querySelector('#bm-audience').value.trim(),
-        mandatory_cta: brandModal.querySelector('#bm-cta').value.trim(),
-        director_system_prompt: brandModal.querySelector('#bm-prompt').value.trim(),
+        mandatory_cta: '',
+        director_system_prompt: '',
         pacing_mode: 'snappy',
         remove_dead_space: true,
         enable_sfx: false,
