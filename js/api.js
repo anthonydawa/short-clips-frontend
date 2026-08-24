@@ -15,6 +15,9 @@ async function mockRequest(endpoint, options = {}) {
     try { body = JSON.parse(options.body); } catch (_) {}
   }
   if (endpoint === CONFIG.ENDPOINTS.pilotApplications) return { application_id: `pilot_${Date.now()}`, status: 'received_locally' };
+  if (endpoint === CONFIG.ENDPOINTS.billingCheckout) return { configured: false, checkout_url: null, message: 'Creem checkout is ready to connect after the product and API keys are added.' };
+  if (endpoint === CONFIG.ENDPOINTS.billingStatus) return { configured: false, status: 'pending_setup' };
+  if (endpoint === CONFIG.ENDPOINTS.billingPortal) return { configured: false, portal_url: null };
   if (endpoint === CONFIG.ENDPOINTS.channelAudit) throw new Error('Channel analysis server is not connected yet.');
   if (endpoint.startsWith(CONFIG.ENDPOINTS.brands) && options.method === 'POST') return { ...body, brand_id: body.brand_id || `brand_${Date.now()}` };
   if (endpoint === CONFIG.ENDPOINTS.brands || endpoint.startsWith(`${CONFIG.ENDPOINTS.brands}?`)) return [];
@@ -73,6 +76,14 @@ export const api = {
 
   // Auth
   getMe: () => request('/api/v1/auth/me'),
+
+  // Billing. The backend owns the Creem product ID, price, API key, and success URL.
+  createBillingCheckout: () => request(CONFIG.ENDPOINTS.billingCheckout, {
+    method: 'POST',
+    body: JSON.stringify({ plan_key: CONFIG.BILLING_PLAN_KEY }),
+  }),
+  getBillingStatus: () => request(CONFIG.ENDPOINTS.billingStatus),
+  createBillingPortal: () => request(CONFIG.ENDPOINTS.billingPortal, { method: 'POST' }),
 
   // Brands
   getBrands: (limit = 50) => request(`/api/v1/brands?limit=${limit}`),

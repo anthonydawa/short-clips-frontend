@@ -5,7 +5,7 @@ const form = document.querySelector('#pilot-form');
 const status = document.querySelector('#form-status');
 const signupSource = document.body.dataset.signupSource || 'paid_signup';
 const isFreeTrial = signupSource === 'free_trial_request';
-const defaultButtonLabel = isFreeTrial ? 'Build my pilot workspace' : 'Create my account — $19.96';
+const defaultButtonLabel = isFreeTrial ? 'Build my pilot workspace' : 'Continue to secure checkout';
 
 form?.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -34,6 +34,20 @@ form?.addEventListener('submit', async (event) => {
     }
     const storageKey = isFreeTrial ? 'shoort_clips_pilot' : 'shoort_clips_signup';
     localStorage.setItem(storageKey, JSON.stringify({ ...pilotPayload, application_id: applicationId, signup_source: signupSource, created_at: new Date().toISOString() }));
+    if (!isFreeTrial) {
+      if (!signup?.session) {
+        status.textContent = 'Account created. Confirm your email, then sign in to continue to secure checkout.';
+        return;
+      }
+      button.querySelector('span').textContent = 'Opening secure checkout…';
+      const checkout = await api.createBillingCheckout();
+      if (checkout?.checkout_url) {
+        window.location.assign(checkout.checkout_url);
+        return;
+      }
+      status.textContent = checkout?.message || 'Your account is ready. Creem checkout will be available as soon as billing is connected.';
+      return;
+    }
     if (signup?.session && signup?.user) {
       window.location.href = 'app.html?welcome=1';
       return;
@@ -41,7 +55,8 @@ form?.addEventListener('submit', async (event) => {
     status.textContent = 'Account created. Check your email to confirm it, then sign in to open your workspace.';
   } catch (error) {
     status.textContent = error.message || 'We could not create the workspace. Please try again.';
+  } finally {
+    button.disabled = false;
+    button.querySelector('span').textContent = defaultButtonLabel;
   }
-  button.disabled = false;
-  button.querySelector('span').textContent = defaultButtonLabel;
 });

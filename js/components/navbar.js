@@ -18,6 +18,9 @@ export function renderNavbar(container) {
         ? 'using saved channel signals'
         : 'waiting for channel data';
     const initials = displayName.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase();
+    const upgradeControl = user && state.userAccess?.access_type === 'free_trial'
+      ? `<button class="topbar-upgrade" id="btn-upgrade-plan" type="button" title="Continue after your trial for $19.96 per month"><span>Upgrade</span><strong>$19.96/mo</strong></button>`
+      : '';
     const accountControl = user
       ? `<div class="topbar-user topbar-user-authenticated">
           <div class="topbar-avatar">${initials || 'SC'}</div>
@@ -34,12 +37,17 @@ export function renderNavbar(container) {
       <div class="navbar-container">
         <div class="topbar-copy"><h2>Growth workspace</h2><p>Agent status: ${agentStatus}</p></div>
         <div class="nav-actions">
+          ${upgradeControl}
           <button class="topbar-tool" id="btn-open-analytics" title="View channel analytics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17V7m0 10h14M8 14l3-3 2 2 5-6"></path></svg><span>Analytics</span></button>
           ${accountControl}
         </div>
       </div>`;
 
-    container.querySelector('#btn-open-analytics')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_ANALYTICS')));
+    container.querySelector('#btn-upgrade-plan')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('START_CHECKOUT')));
+    container.querySelector('#btn-open-analytics')?.addEventListener('click', () => {
+      if (state.userAccess?.is_active === false) window.dispatchEvent(new CustomEvent('START_CHECKOUT'));
+      else window.dispatchEvent(new CustomEvent('OPEN_ANALYTICS'));
+    });
     container.querySelector('#btn-open-auth')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL')));
     container.querySelector('#btn-auth-logout')?.addEventListener('click', async () => { await signOut(); state.setUser(null); });
   }

@@ -14,6 +14,7 @@ export default defineConfig({
         freeTrial: resolve(import.meta.dirname, 'free-trial.html'),
         register: resolve(import.meta.dirname, 'register.html'),
         trialRegister: resolve(import.meta.dirname, 'trial-register.html'),
+        paymentSuccess: resolve(import.meta.dirname, 'payment-success.html'),
         app: resolve(import.meta.dirname, 'app.html'),
       },
     },

@@ -448,22 +448,30 @@ export async function loadUserAccessFromSupabase(userId) {
   if (supabaseClient && userId !== 'dev_user') {
     const { data, error } = await supabaseClient
       .from('user_access')
-      .select('user_id, access_type, is_active, signup_source, trial_ends_at, paid_until, created_at, updated_at')
+      .select('user_id, access_type, is_active, signup_source, trial_ends_at, paid_until, creem_customer_id, creem_subscription_id, subscription_status, created_at, updated_at')
       .eq('user_id', userId)
       .maybeSingle();
 
-    if (!error && data) return data;
+    if (!error && data) {
+      const trialExpired = data.access_type === 'free_trial'
+        && data.trial_ends_at
+        && new Date(data.trial_ends_at).getTime() <= Date.now();
+      return trialExpired ? { ...data, is_active: false, trial_expired: true } : data;
+    }
 
     if (error) {
       console.warn('Supabase user_access is not available yet:', error.message);
     }
   }
 
+  const signupSource = state.user?.user_metadata?.signup_source || 'direct';
+  const isFreeTrial = signupSource === 'free_trial_request';
+  const isAdminInvite = signupSource === 'admin_invite';
   return {
     user_id: userId,
-    access_type: 'test_user',
-    is_active: true,
-    signup_source: 'direct',
+    access_type: isFreeTrial ? 'free_trial' : isAdminInvite ? 'test_user' : 'paid',
+    is_active: isFreeTrial || isAdminInvite,
+    signup_source: signupSource,
     temporary_default: true,
   };
 }

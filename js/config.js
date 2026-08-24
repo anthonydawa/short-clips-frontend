@@ -44,6 +44,9 @@ export const CONFIG = {
 
   ENDPOINTS: {
     pilotApplications: '/api/v1/pilot/applications',
+    billingCheckout: '/api/v1/billing/checkout',
+    billingStatus: '/api/v1/billing/status',
+    billingPortal: '/api/v1/billing/portal',
     brands: '/api/v1/brands',
     channelAudit: '/api/v1/brands/analyze-channel',
     submitJob: '/api/v1/jobs/submit',
@@ -62,4 +65,6 @@ export const CONFIG = {
   PACING_MODES: ['snappy', 'hyper', 'natural', 'cinematic'],
   CROP_MODES: ['auto_track', 'center', 'left', 'right'],
   DEFAULT_CLIP_COUNT: 5,
+  BILLING_PLAN_KEY: 'shoort_monthly',
+  BILLING_PRICE_USD: 19.96,
 };

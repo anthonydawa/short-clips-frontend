@@ -62,6 +62,10 @@
 .workspace-body .topbar-signout svg{width:13px!important;height:13px!important}
 .workspace-body .topbar-signout:hover{border-color:#ffc8c4!important;color:#d91b25!important}
 .workspace-body .topbar-signout span{min-width:0!important}
+.workspace-body .topbar-upgrade{min-height:42px;display:flex;align-items:center;gap:8px;padding:0 13px;border:1px solid #ff2d2d;border-radius:10px;background:#ff2d2d;color:#fff;cursor:pointer;box-shadow:0 7px 16px rgba(255,45,45,.16);font-family:var(--font-display);transition:.18s ease}
+.workspace-body .topbar-upgrade span{font-size:10px;font-weight:700}
+.workspace-body .topbar-upgrade strong{font-size:11px}
+.workspace-body .topbar-upgrade:hover{background:#dc131e;transform:translateY(-1px)}
 .workspace-body .workspace-switcher button{min-height:50px}
 .workspace-body .workspace-switcher button strong{font-size:11px}
 .workspace-body .workspace-switcher button small{font-size:9px}
@@ -131,6 +135,7 @@
 @media(max-width:760px){.workspace-body .brand-field-grid{grid-template-columns:1fr!important}.workspace-body .grid-3col{grid-template-columns:1fr!important}.workspace-body .progress-header{align-items:flex-start}.workspace-body .timeline-steps{grid-template-columns:repeat(3,1fr);gap:12px}.workspace-body .timeline-step:nth-child(n+4){margin-top:10px}}
 
 @media(max-width:760px){.workspace-body .drawer-content{grid-template-columns:1fr}}
+@media(max-width:760px){.workspace-body .topbar-upgrade{min-height:38px;padding:0 10px}.workspace-body .topbar-upgrade span{display:none}.workspace-body .topbar-upgrade strong{font-size:10px}}
 
 /* The signed-up workspace identity is informational, not a workspace switcher. */
 .workspace-identity{width:100%;display:flex;align-items:center;gap:9px;padding:9px;border:1px solid #e5e2de;border-radius:9px;background:#fbfaf8;color:#222;text-align:left}

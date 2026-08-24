@@ -4,7 +4,7 @@
 
 import { CONFIG } from '../config.js';
 import { state } from '../state.js';
-import { signInWithGoogle, signInWithEmail, signUpWithEmail } from '../supabase.js';
+import { signInWithGoogle, signInWithEmail } from '../supabase.js';
 
 export function initAuthModal() {
   const modalEl = document.getElementById('auth-modal');
@@ -50,11 +50,6 @@ export function initAuthModal() {
           <div style="flex: 1; height: 1px; background: var(--border-glass);"></div>
         </div>
 
-        <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;">
-          <button id="tab-sign-in" type="button" class="btn btn-sm btn-primary" style="flex: 1;">Sign in</button>
-          <button id="tab-sign-up" type="button" class="btn btn-sm btn-ghost" style="flex: 1;">Create account</button>
-        </div>
-
         <!-- Email & Password Form -->
         <form id="email-auth-form" style="display: flex; flex-direction: column; gap: 14px;">
           <div class="setting-item">
@@ -71,25 +66,8 @@ export function initAuthModal() {
       </div>
     `;
 
-    let isSignUpMode = false;
-    const tabSignIn = modalEl.querySelector('#tab-sign-in');
-    const tabSignUp = modalEl.querySelector('#tab-sign-up');
     const submitBtn = modalEl.querySelector('#btn-submit-email-auth');
     const statusEl = modalEl.querySelector('#auth-status');
-
-    tabSignIn.addEventListener('click', () => {
-      isSignUpMode = false;
-      tabSignIn.className = 'btn btn-sm btn-primary';
-      tabSignUp.className = 'btn btn-sm btn-ghost';
-      submitBtn.textContent = 'Sign in';
-    });
-
-    tabSignUp.addEventListener('click', () => {
-      isSignUpMode = true;
-      tabSignUp.className = 'btn btn-sm btn-primary';
-      tabSignIn.className = 'btn btn-sm btn-ghost';
-      submitBtn.textContent = 'Create account';
-    });
 
     // Event Listeners
     modalEl.querySelector('#btn-close-auth-modal').addEventListener('click', () => {
@@ -118,24 +96,15 @@ export function initAuthModal() {
       submitBtn.innerHTML = '<span class="anim-spin"></span> Please wait…';
 
       try {
-        if (isSignUpMode) {
-          const signup = await signUpWithEmail(email, pass, { signup_source: 'direct' });
-          if (signup?.session && signup?.user) state.setUser(signup.user);
-          if (!signup?.session) {
-            statusEl.textContent = 'Account created. Check your email to confirm it, then sign in.';
-            return;
-          }
-        } else {
-          const user = await signInWithEmail(email, pass);
-          if (user) state.setUser(user);
-        }
+        const user = await signInWithEmail(email, pass);
+        if (user) state.setUser(user);
         modalEl.classList.remove('active');
       } catch (err) {
         statusEl.textContent = err.message || 'Authentication failed. Please try again.';
-        console.warn((isSignUpMode ? 'Sign Up' : 'Sign In') + ' notice:', err.message);
+        console.warn('Sign In notice:', err.message);
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = isSignUpMode ? 'Create account' : 'Sign in';
+        submitBtn.textContent = 'Sign in';
       }
     });
   }

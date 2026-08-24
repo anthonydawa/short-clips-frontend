@@ -24,10 +24,37 @@ function showToast(message) {
   window.setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
+let checkoutStarting = false;
+async function startBillingCheckout() {
+  if (!state.user) {
+    window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL'));
+    return;
+  }
+  if (checkoutStarting) return;
+  checkoutStarting = true;
+  showToast('Preparing secure checkout…');
+  try {
+    const checkout = await api.createBillingCheckout();
+    if (checkout?.checkout_url) {
+      window.location.assign(checkout.checkout_url);
+      return;
+    }
+    showToast(checkout?.message || 'Creem checkout is not connected yet.');
+  } catch (error) {
+    showToast(error.message || 'Checkout could not be started.');
+  } finally {
+    checkoutStarting = false;
+  }
+}
+
 function initWorkspaceNavigation() {
   const navButtons = document.querySelectorAll('.side-nav [data-view]');
   const panels = document.querySelectorAll('.workspace-view[data-panel]');
   const switchView = (view) => {
+    if (state.user && state.userAccess?.is_active === false && view !== 'overview') {
+      startBillingCheckout();
+      return;
+    }
     navButtons.forEach((button) => button.classList.toggle('active', button.dataset.view === view));
     panels.forEach((panel) => panel.classList.toggle('active', panel.dataset.panel === view));
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -39,11 +66,15 @@ function initWorkspaceNavigation() {
     if (switchButton?.dataset.switch) switchView(switchButton.dataset.switch);
   });
 
-  document.querySelector('#side-analytics')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_ANALYTICS')));
+  document.querySelector('#side-analytics')?.addEventListener('click', () => {
+    if (state.userAccess?.is_active === false) startBillingCheckout();
+    else window.dispatchEvent(new CustomEvent('OPEN_ANALYTICS'));
+  });
   document.querySelector('#sidebar-account-action')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL')));
 
   document.querySelector('#empty-primary')?.addEventListener('click', () => {
     if (!state.user) window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL'));
+    else if (state.userAccess?.is_active === false && ['paid', 'free_trial'].includes(state.userAccess?.access_type)) startBillingCheckout();
     else if (state.userAccess?.is_active === false) showToast('This account does not currently have app access.');
     else if (!state.getActiveBrand()) showToast('Your signup workspace is still loading. Refresh and try again.');
     else switchView('create');
@@ -140,8 +171,8 @@ function renderWorkspaceData() {
   if (accountTitle) accountTitle.textContent = user ? (accessLabels[access?.access_type] || 'Checking access…') : 'Sign in required';
   if (accountCopy) accountCopy.textContent = user
     ? access?.is_active === false
-      ? 'App access is currently inactive.'
-      : 'Workspace data is scoped to your account.'
+      ? access?.access_type === 'paid' ? 'Payment required to unlock the workspace.' : 'App access is currently inactive.'
+      : access?.access_type === 'free_trial' ? 'Free trial · Upgrade for $19.96 per month.' : 'Workspace data is scoped to your account.'
     : 'Your real workspace data will sync after sign in.';
   if (accountAction) accountAction.hidden = Boolean(user);
 
@@ -163,6 +194,7 @@ function renderWorkspaceData() {
   const emptyPrimary = document.querySelector('#empty-primary');
   const emptySecondary = document.querySelector('#empty-secondary');
   if (empty) empty.hidden = clips.length > 0;
+  if (emptyPrimary) emptyPrimary.hidden = false;
 
   if (!user) {
     emptyTitle.textContent = 'Sign in to open your workspace';
@@ -170,9 +202,17 @@ function renderWorkspaceData() {
     emptyPrimary.innerHTML = 'Sign in to continue <span aria-hidden="true">→</span>';
     emptySecondary.hidden = true;
   } else if (access?.is_active === false) {
-    emptyTitle.textContent = 'Your app access is inactive';
-    emptyCopy.textContent = 'Contact Shoort Clips to activate a free trial, paid plan, or test account.';
-    emptyPrimary.textContent = 'Access unavailable';
+    if (['paid', 'free_trial'].includes(access?.access_type)) {
+      emptyTitle.textContent = 'Complete your subscription';
+      emptyCopy.textContent = access?.trial_expired
+        ? 'Your free trial has ended. Continue with Shoort Clips for $19.96 per month.'
+        : 'Continue to Creem’s secure checkout. Your workspace unlocks after the $19.96 monthly payment is confirmed.';
+      emptyPrimary.innerHTML = 'Continue to secure checkout <span aria-hidden="true">→</span>';
+    } else {
+      emptyTitle.textContent = 'Your app access is inactive';
+      emptyCopy.textContent = 'Contact Shoort Clips to reactivate this workspace.';
+      emptyPrimary.textContent = 'Access unavailable';
+    }
     emptySecondary.hidden = true;
   } else if (!activeBrand) {
     emptyTitle.textContent = 'Preparing your workspace';
@@ -283,6 +323,7 @@ async function bootstrap() {
   initBrandManager();
   initAnalyticsModal();
   initWorkspaceNavigation();
+  window.addEventListener('START_CHECKOUT', startBillingCheckout);
   initCalendar();
 
   const mounts = {
