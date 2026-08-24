@@ -228,9 +228,6 @@ export function renderIngestionCard(container) {
         window.dispatchEvent(new CustomEvent('OPEN_BRAND_MANAGER'));
         return;
       }
-      isSubmitting = true;
-      render();
-
       const brandId = state.activeBrandId || undefined;
       const clipCount = parseInt(container.querySelector('#cfg-clip-count').value, 10);
       const subtitlePreset = 'clean';
@@ -239,6 +236,10 @@ export function renderIngestionCard(container) {
       const enableSfx = container.querySelector('#cfg-sfx').checked;
       const enableTopBanner = container.querySelector('#cfg-top-banner').checked;
       const customInstructions = container.querySelector('#cfg-custom-instructions').value;
+
+      // Capture settings before the loading render replaces the form controls.
+      isSubmitting = true;
+      render();
 
       try {
         state.resetProgress();
@@ -263,6 +264,11 @@ export function renderIngestionCard(container) {
           formData.append('file', selectedFile);
           if (brandId) formData.append('brand_id', brandId);
           formData.append('target_clip_count', clipCount);
+          formData.append('subtitle_preset', subtitlePreset);
+          formData.append('pacing_mode', pacingMode);
+          formData.append('remove_dead_space', removeDeadSpace);
+          formData.append('enable_sfx', enableSfx);
+          formData.append('enable_top_banner', enableTopBanner);
           if (customInstructions) formData.append('custom_instructions', customInstructions);
           result = await api.uploadVideo(formData);
         }
