@@ -1,0 +1,16 @@
+{
+  "name": "shoort-clips-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shoort Clips — agentic short-form growth platform and marketing site",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite preview --port 5173 --host"
+  },
+  "devDependencies": {
+    "vite": "^8.2.2"
+  }
+}

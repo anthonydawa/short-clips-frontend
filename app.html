@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growth Workspace — Shoort Clips</title>
+  <meta name="description" content="Plan, create, approve, test, and schedule strategic short clips with your Shoort Clips growth agent.">
+  <meta name="theme-color" content="#ff2d2d">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/app-redesign.css">
+  <link rel="stylesheet" href="css/logo-fixes.css">
+  <link rel="icon" type="image/png" href="assets/shoort-clips-mark.png">
+</head>
+<body class="workspace-body">
+  <div class="workspace-shell">
+    <aside class="app-sidebar">
+      <a class="app-wordmark" href="index.html"><span><img src="assets/shoort-clips-mark.png" alt=""></span><strong>shoort clips</strong></a>
+      <div class="workspace-switcher">
+        <small>WORKSPACE</small>
+        <button type="button" id="workspace-brand-button"><i>SC</i><span><strong id="workspace-name">No brand selected</strong><small id="workspace-subtitle">Set up your brand</small></span><b>⌄</b></button>
+      </div>
+      <nav class="side-nav" aria-label="Workspace navigation">
+        <button class="active" data-view="overview"><span>⌁</span>Overview</button>
+        <button data-view="create"><span>＋</span>Create clips</button>
+        <button data-view="library"><span>▦</span>Clip library <i id="library-count">0</i></button>
+        <button data-view="calendar"><span>◷</span>Test calendar</button>
+        <button data-view="intelligence"><span>↗</span>Intelligence</button>
+      </nav>
+      <div class="side-label">MANAGE</div>
+      <nav class="side-nav secondary-nav">
+        <button id="side-brand"><span>◎</span>Brand profile</button>
+        <button id="side-audit"><span>⌕</span>Channel audit</button>
+        <button id="side-analytics"><span>▥</span>Analytics</button>
+      </nav>
+      <div class="pilot-meter" id="account-status">
+        <div><span>ACCOUNT</span><strong id="account-status-title">Sign in required</strong></div>
+        <small id="account-status-copy">Your real workspace data will sync after sign in.</small>
+        <button type="button" id="sidebar-account-action">Sign in to sync</button>
+      </div>
+      <a class="back-home" href="index.html">← Back to website</a>
+    </aside>
+
+    <div class="workspace-main">
+      <header class="workspace-topbar" id="navbar-mount"></header>
+      <main class="workspace-content">
+        <div class="welcome-toast" id="welcome-toast" hidden><span>✦</span><div><strong>Your workspace is ready.</strong><p>Set up your brand, then add your first long-form video.</p></div><button type="button" aria-label="Dismiss">×</button></div>
+
+        <section class="workspace-view active" data-panel="overview">
+          <div class="page-heading">
+            <div><span class="page-kicker" id="current-date"></span><h1 id="overview-heading">Start building your clip engine.</h1><p id="overview-subheading">Real clips, schedules, and channel insights will appear here as they are created.</p></div>
+            <button class="primary-action" data-switch="create">Create clips from a video <span aria-hidden="true">→</span></button>
+          </div>
+          <section class="empty-product-hero" id="overview-empty">
+            <div class="empty-product-icon"><img src="assets/shoort-clips-mark.png" alt=""></div>
+            <div class="empty-product-copy">
+              <span class="card-kicker">GET STARTED</span>
+              <h2 id="empty-title">Sign in to open your workspace</h2>
+              <p id="empty-copy">Your projects and channel data are private to your account.</p>
+            </div>
+            <div class="empty-product-action"><span>NEXT STEP</span><div class="empty-actions"><button class="brief-primary" id="empty-primary">Sign in <span aria-hidden="true">→</span></button><button class="brief-secondary" id="empty-secondary" hidden>Set up brand</button></div></div>
+          </section>
+          <div class="metrics-row" id="overview-metrics">
+            <article><span class="metric-icon coral">◫</span><div><small>Clips ready</small><strong id="metric-clips">0</strong><em>No clips created</em></div></article>
+            <article><span class="metric-icon green">↗</span><div><small>Avg. viewed</small><strong id="metric-viewed">—</strong><em>Awaiting analytics</em></div></article>
+            <article><span class="metric-icon blue">◷</span><div><small>Scheduled</small><strong id="metric-scheduled">0</strong><em>Nothing scheduled</em></div></article>
+            <article><span class="metric-icon amber">✦</span><div><small>Tests running</small><strong id="metric-tests">0</strong><em>No active tests</em></div></article>
+          </div>
+          <div class="overview-grid">
+            <section class="dashboard-card queue-card">
+              <div class="card-head"><div><span class="card-kicker">APPROVAL QUEUE</span><h2>Clips waiting on you</h2></div><button data-switch="library">Open library →</button></div>
+              <div class="data-empty-card" id="approval-queue-empty"><span>▦</span><h3>No clips yet</h3><p>Submit a long-form video and finished clips will appear here for review.</p><button data-switch="create">Create your first clips</button></div>
+              <div class="mini-clips" id="approval-queue-list"></div>
+            </section>
+            <aside class="dashboard-card schedule-preview">
+              <div class="card-head"><div><span class="card-kicker">TEST MODE</span><h2>Upcoming schedule</h2></div><button data-switch="calendar">Open calendar →</button></div>
+              <div class="data-empty-card compact"><span>◷</span><h3>No scheduled clips</h3><p>Your approved publishing plan will appear here.</p></div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="workspace-view" data-panel="create">
+          <div class="page-heading compact-heading"><div><span class="page-kicker">CREATE</span><h1>Turn one long video into the next growth test.</h1><p>Add a YouTube link or upload a file. The agent will use your active brand strategy.</p></div></div>
+          <div id="ingestion-mount"></div><div id="progress-mount"></div>
+        </section>
+
+        <section class="workspace-view" data-panel="library">
+          <div class="page-heading compact-heading"><div><span class="page-kicker">CLIP LIBRARY</span><h1>Review the work. Keep the voice.</h1><p>Only clips generated for your account appear here.</p></div><button class="primary-action" data-switch="create">＋ Create clips</button></div>
+          <div class="studio-layout"><div id="player-mount"></div><div id="inspector-mount"></div></div><div id="studio-mount"></div>
+        </section>
+
+        <section class="workspace-view" data-panel="calendar">
+          <div class="page-heading compact-heading"><div><span class="page-kicker">TEST CALENDAR</span><h1>Schedule for learning, not just consistency.</h1><p>Your real publishing schedule will fill this calendar.</p></div><button class="primary-action" id="save-schedule">Save schedule</button></div>
+          <div class="calendar-layout">
+            <section class="dashboard-card calendar-card">
+              <div class="calendar-head"><button id="calendar-prev" aria-label="Previous month">←</button><h2 id="calendar-month"></h2><button id="calendar-next" aria-label="Next month">→</button></div>
+              <div class="calendar-grid calendar-labels"><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div>
+              <div class="calendar-grid calendar-days" id="calendar-days"></div>
+              <div class="calendar-empty-note">No clips scheduled for this month.</div>
+            </section>
+            <aside class="dashboard-card schedule-controls">
+              <span class="card-kicker">AGENT CONTROLS</span><h2>Test mode</h2>
+              <label><span>Publishing frequency</span><select id="schedule-frequency"><option value="3">3 clips per week</option><option value="4">4 clips per week</option><option value="5">5 clips per week</option><option value="7">Daily</option></select></label>
+              <label><span>Primary test</span><select id="schedule-test"><option value="hook_angle">Hook angle</option><option value="topic_mix">Topic mix</option><option value="publishing_time">Publishing time</option><option value="clip_length">Clip length</option></select></label>
+              <label><span>Approval mode</span><select id="schedule-approval"><option value="every_clip">Approve every clip</option><option value="weekly_batch">Approve weekly batch</option><option value="approved_formats">Auto-schedule approved formats</option></select></label>
+              <div class="toggle-row"><div><strong>Auto-fill open slots</strong><small>Use approved clips only</small></div><button class="switch" aria-label="Toggle auto-fill"><i></i></button></div>
+              <div class="toggle-row"><div><strong>Protect long-form days</strong><small>No clip within 3 hours</small></div><button class="switch" aria-label="Toggle protected days"><i></i></button></div>
+              <div class="control-note">✦ Save a schedule after your processing server is connected.</div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="workspace-view" data-panel="intelligence">
+          <div class="page-heading compact-heading"><div><span class="page-kicker">CHANNEL INTELLIGENCE</span><h1>Know what to make before you make it.</h1><p>Real signals from your channel and generated clips become the next directive.</p></div><button class="primary-action" id="refresh-intelligence">Refresh analysis</button></div>
+          <section class="dashboard-card intelligence-empty" id="intelligence-empty"><span>↗</span><h2>No channel analysis yet</h2><p>Connect your channel or run an audit to generate evidence-based content opportunities. Shoort Clips will not invent recommendations without data.</p><button id="start-channel-audit">Run channel audit</button></section>
+          <div class="intelligence-grid" id="intelligence-data" hidden></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="auth-modal"></div>
+  <div class="modal-backdrop" id="brand-modal"></div>
+  <div class="modal-backdrop" id="auditor-modal"></div>
+  <div class="modal-backdrop" id="analytics-modal"></div>
+  <div class="app-toast" id="app-toast" role="status" aria-live="polite"></div>
+  <script>
+    const shoortClipsConfig = window.SHOORT_CLIPS_CONFIG || {};
+    window.SHOORT_CLIPS_CONFIG = {
+      ...shoortClipsConfig,
+      AUTH_ENABLED: shoortClipsConfig.AUTH_ENABLED ?? true,
+      MOCK_MODE: shoortClipsConfig.MOCK_MODE ?? true
+    };
+  </script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

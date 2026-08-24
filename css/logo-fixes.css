@@ -1,0 +1,18 @@
+/* Keep the generated mark inside its wrapper instead of scaling past the edge. */
+.mark-wrap,
+.tiny-mark,
+.mark,
+.app-wordmark > span,
+.agent-avatar {
+  overflow: visible;
+}
+
+.mark-wrap img,
+.tiny-mark img,
+.mark img,
+.app-wordmark img,
+.agent-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

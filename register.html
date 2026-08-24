@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Start Your Free Month — Shoort Clips</title>
+  <meta name="description" content="Apply for a free 30-day Shoort Clips pilot and turn your long-form content into a strategic short-form growth system.">
+  <meta name="theme-color" content="#ff2d2d">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/register.css"><link rel="stylesheet" href="css/logo-fixes.css"><link rel="icon" type="image/png" href="assets/shoort-clips-mark.png">
+</head>
+<body>
+  <main class="register-layout">
+    <section class="register-story">
+      <a class="wordmark" href="index.html"><span class="mark"><img src="assets/shoort-clips-mark.png" alt=""></span><span>shoort clips</span></a>
+      <div class="story-content">
+        <span class="eyebrow">30-DAY GROWTH PILOT</span>
+        <h1>Let your best ideas work harder.</h1>
+        <p>We’ll audit the channel, plan the content gaps, create your clips, and build a test schedule. You approve every move.</p>
+        <div class="timeline">
+          <div><span>1</span><section><strong>Tell us about the channel</strong><small>About 3 minutes</small></section></div>
+          <div><span>2</span><section><strong>We review your fit</strong><small>Usually within one business day</small></section></div>
+          <div><span>3</span><section><strong>Your agent builds the month</strong><small>Audit, clips, tests, schedule, learnings</small></section></div>
+        </div>
+      </div>
+      <div class="story-quote"><span>“</span><p>The goal isn’t more files in a folder. It’s a repeatable way to learn what makes your channel grow.</p></div>
+    </section>
+
+    <section class="register-form-wrap">
+      <div class="form-top"><a href="index.html">← Back to home</a><span>Already have a workspace? <a href="app.html">Sign in</a></span></div>
+      <div class="form-card">
+        <div class="form-heading"><span class="step-label">CREATE YOUR WORKSPACE · STEP 1 OF 1</span><h2>Start your free month</h2><p>Create your secure workspace, then give the growth agent enough context to make a useful first plan.</p></div>
+        <form id="pilot-form">
+          <div class="field-grid">
+            <label><span>First name</span><input name="first_name" autocomplete="given-name" required placeholder="Alex"></label>
+            <label><span>Last name</span><input name="last_name" autocomplete="family-name" required placeholder="Morgan"></label>
+          </div>
+          <label><span>Work email</span><input type="email" name="email" autocomplete="email" required placeholder="alex@company.com"></label>
+          <div class="field-grid">
+            <label><span>Create password</span><input type="password" name="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"></label>
+            <label><span>Confirm password</span><input type="password" name="password_confirmation" autocomplete="new-password" minlength="8" required placeholder="Repeat your password"></label>
+          </div>
+          <label><span>Company or channel name</span><input name="company" autocomplete="organization" required placeholder="Acme Media"></label>
+          <label><span>YouTube channel or long-form video URL</span><input type="url" name="channel_url" required placeholder="https://youtube.com/@yourchannel"></label>
+          <div class="field-grid">
+            <label><span>Long-form videos / month</span><select name="video_frequency" required><option value="">Select</option><option>1–2</option><option>3–4</option><option>5–8</option><option>9+</option></select></label>
+            <label><span>Main business goal</span><select name="goal" required><option value="">Select</option><option>More qualified leads</option><option>Audience growth</option><option>Brand awareness</option><option>Long-form views</option><option>Product sales</option></select></label>
+          </div>
+          <label><span>What should the agent understand about your audience?</span><textarea name="audience" rows="3" placeholder="Who they are, what they want, and why they watch you..."></textarea></label>
+          <label class="consent"><input type="checkbox" name="consent" required><span>I own or have permission to repurpose the videos I submit.</span></label>
+          <button class="submit-button" type="submit"><span>Build my pilot workspace</span><b>→</b></button>
+          <p class="form-note">No credit card. Your account is secured by Supabase. If email confirmation is enabled, check your inbox before signing in.</p>
+          <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+      <div class="security-note"><span>✓</span><p><strong>Your content stays yours.</strong> Nothing is published without approval.</p></div>
+    </section>
+  </main>
+  <script type="module" src="js/register.js"></script>
+</body>
+</html>
