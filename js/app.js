@@ -39,19 +39,16 @@ function initWorkspaceNavigation() {
     if (switchButton?.dataset.switch) switchView(switchButton.dataset.switch);
   });
 
-  document.querySelector('#side-brand')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_BRAND_MANAGER')));
-  document.querySelector('#workspace-brand-button')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_BRAND_MANAGER')));
   document.querySelector('#side-analytics')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_ANALYTICS')));
   document.querySelector('#sidebar-account-action')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL')));
 
   document.querySelector('#empty-primary')?.addEventListener('click', () => {
     if (!state.user) window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL'));
     else if (state.userAccess?.is_active === false) showToast('This account does not currently have app access.');
-    else if (!state.getActiveBrand()) window.dispatchEvent(new CustomEvent('OPEN_BRAND_MANAGER'));
+    else if (!state.getActiveBrand()) showToast('Your signup workspace is still loading. Refresh and try again.');
     else switchView('create');
   });
 
-  document.querySelector('#empty-secondary')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_BRAND_MANAGER')));
   document.querySelector('#save-schedule')?.addEventListener('click', async () => {
     if (!state.user) {
       window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL'));
@@ -178,11 +175,12 @@ function renderWorkspaceData() {
     emptyPrimary.textContent = 'Access unavailable';
     emptySecondary.hidden = true;
   } else if (!activeBrand) {
-    emptyTitle.textContent = 'Set up your first brand';
-    emptyCopy.textContent = 'Add your channel, audience, voice, and clip style so the agent knows what to optimize.';
-    emptyPrimary.innerHTML = 'Create brand profile <span aria-hidden="true">→</span>';
+    emptyTitle.textContent = 'Preparing your workspace';
+    emptyCopy.textContent = 'Your signup details are being connected to this workspace.';
+    emptyPrimary.hidden = true;
     emptySecondary.hidden = true;
   } else {
+    emptyPrimary.hidden = false;
     emptyTitle.textContent = 'Add your first long-form video';
     emptyCopy.textContent = 'Paste a YouTube link or upload a video. Real generated clips will appear after the processing server completes the job.';
     emptyPrimary.innerHTML = 'Create clips <span aria-hidden="true">→</span>';
@@ -261,6 +259,19 @@ async function loadWorkspaceRecords(currentUser) {
   }
 }
 
+function hydrateSignupWorkspace(currentUser) {
+  if (state.getActiveBrand()) return;
+  let pilot = {};
+  try { pilot = JSON.parse(localStorage.getItem('shoort_clips_pilot') || '{}'); } catch (error) {}
+  const metadata = currentUser?.user_metadata || {};
+  const brandName = pilot.company || metadata.company || metadata.name || currentUser?.email?.split('@')[0];
+  const channelUrl = pilot.channel_url || metadata.channel_url || '';
+  if (!brandName && !channelUrl) return;
+  const brand = { brand_id: `signup_${currentUser.user_id}`, brand_name: brandName || 'My workspace', channel_url: channelUrl, niche: '', subtitle_preset: 'clean', target_audience: '', mandatory_cta: '', director_system_prompt: '', is_default: true };
+  state.setBrands([brand]);
+  state.setActiveBrand(brand.brand_id);
+}
+
 async function bootstrap() {
   let currentUser = null;
   if (CONFIG.AUTH_ENABLED) {
@@ -295,6 +306,7 @@ async function bootstrap() {
   });
   renderWorkspaceData();
   await loadWorkspaceRecords(currentUser);
+  hydrateSignupWorkspace(currentUser);
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootstrap);

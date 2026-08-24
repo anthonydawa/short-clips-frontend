@@ -22,6 +22,7 @@ form?.addEventListener('submit', async (event) => {
       first_name: pilotPayload.first_name,
       last_name: pilotPayload.last_name,
       company: pilotPayload.company,
+      channel_url: pilotPayload.channel_url,
     });
     const result = await api.applyForPilot(pilotPayload);
     localStorage.setItem('shoort_clips_pilot', JSON.stringify({ ...pilotPayload, application_id: result.application_id, created_at: new Date().toISOString() }));

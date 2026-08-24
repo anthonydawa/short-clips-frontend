@@ -196,7 +196,7 @@ export function renderIngestionCard(container) {
         return;
       }
       if (!state.getActiveBrand()) {
-        window.dispatchEvent(new CustomEvent('OPEN_BRAND_MANAGER'));
+        state.updateProgress('FAILED', 0, 'Your signup workspace is still loading. Please refresh and try again.', true);
         return;
       }
       const brandId = state.activeBrandId || undefined;

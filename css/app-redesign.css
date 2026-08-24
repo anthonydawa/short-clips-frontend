@@ -132,6 +132,13 @@
 
 @media(max-width:760px){.workspace-body .drawer-content{grid-template-columns:1fr}}
 
+/* The signed-up workspace identity is informational, not a workspace switcher. */
+.workspace-identity{width:100%;display:flex;align-items:center;gap:9px;padding:9px;border:1px solid #e5e2de;border-radius:9px;background:#fbfaf8;color:#222;text-align:left}
+.workspace-identity>i{display:grid;place-items:center;width:28px;height:28px;border-radius:7px;background:#171717;color:#fff;font:800 9px var(--font-display);font-style:normal}
+.workspace-identity>span{min-width:0;display:flex;flex:1;flex-direction:column}
+.workspace-identity strong{overflow:hidden;font-size:10px;text-overflow:ellipsis;white-space:nowrap}
+.workspace-identity small{color:#999;font-size:8px}
+
 /* Onboarding card: one clear message, one anchored next step. */
 .workspace-body .empty-product-hero{grid-template-columns:auto minmax(0,1fr) auto;min-height:148px;gap:26px;padding:24px 28px}
 .workspace-body .empty-product-copy{min-width:0}
