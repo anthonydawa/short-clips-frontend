@@ -65,11 +65,6 @@ export function initBrandManager() {
 
           </div>
 
-          <div class="setting-item">
-            <label class="setting-label">Target audience</label>
-            <input type="text" id="bm-audience" value="${brand.target_audience || ''}" placeholder="e.g. Founders, students, fitness lovers">
-          </div>
-
           <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px;">
             <button type="button" id="btn-cancel-brand" class="btn btn-secondary btn-sm">Cancel</button>
             <button type="submit" class="btn btn-primary btn-sm" style="padding: 8px 18px;">
@@ -97,7 +92,7 @@ export function initBrandManager() {
         niche: brandModal.querySelector('#bm-niche').value.trim(),
         // Keep the API payload compatible while caption styling is not user-configurable.
         subtitle_preset: 'clean',
-        target_audience: brandModal.querySelector('#bm-audience').value.trim(),
+        target_audience: '',
         mandatory_cta: '',
         director_system_prompt: '',
         pacing_mode: 'snappy',
