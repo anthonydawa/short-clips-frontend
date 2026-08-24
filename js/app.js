@@ -260,7 +260,6 @@ async function loadWorkspaceRecords(currentUser) {
 }
 
 function hydrateSignupWorkspace(currentUser) {
-  if (state.getActiveBrand()) return;
   let pilot = {};
   try { pilot = JSON.parse(localStorage.getItem('shoort_clips_pilot') || '{}'); } catch (error) {}
   const metadata = currentUser?.user_metadata || {};
