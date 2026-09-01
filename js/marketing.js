@@ -19,14 +19,11 @@ window.matchMedia('(max-width: 1050px)').addEventListener('change', () => setMen
 document.querySelectorAll('.faq-list details').forEach((item) => item.addEventListener('toggle', () => { if (item.open) document.querySelectorAll('.faq-list details[open]').forEach((other) => { if (other !== item) other.removeAttribute('open'); }); }));
 
 if (document.body.dataset.publicPreview === 'true') {
-  const previewNotice = document.querySelector('#preview-notice');
   document.querySelectorAll('[data-preview-action]').forEach((action) => {
-    if (action.classList.contains('button')) action.innerHTML = 'Preview only · Signups closed <span aria-hidden="true">↗</span>';
-    else action.textContent = 'Preview only';
     action.addEventListener('click', (event) => {
       event.preventDefault();
       setMenuOpen(false);
-      previewNotice?.focus({ preventScroll: true });
+      action.blur();
     });
   });
 }

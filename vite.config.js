@@ -9,8 +9,7 @@ export default defineConfig(({ mode }) => {
       if (!publicPreview) return html;
       return html
         .replace('<body id="top">', '<body id="top" data-public-preview="true">')
-        .replace(/href="(?:app|register|trial-register|payment-success)\.html[^\"]*"/g, 'href="#preview-notice" data-preview-action="true" aria-disabled="true"')
-        .replace('<a class="skip-link"', '<aside class="preview-banner" id="preview-notice" tabindex="-1" role="status"><strong>Website preview</strong><span>Accounts, applications, and purchases are currently closed.</span></aside><a class="skip-link"');
+        .replace(/href="(?:app|register|trial-register|payment-success)\.html[^\"]*"/g, 'href="#" data-preview-action="true" aria-disabled="true"');
     },
   };
 
