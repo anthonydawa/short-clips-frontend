@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --mode public-preview",
+    "build:preview": "vite build --mode public-preview",
+    "build:full": "vite build",
     "preview": "vite preview",
     "start": "vite preview --port 5173 --host"
   },

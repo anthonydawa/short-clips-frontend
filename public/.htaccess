@@ -2,6 +2,9 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # Public preview: product, signup, and payment pages stay offline.
+  RewriteRule ^(?:app|register|trial-register|payment-success)\.html$ /?preview=1 [R=302,L,NE]
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
