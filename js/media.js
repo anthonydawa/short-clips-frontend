@@ -34,9 +34,12 @@ export function getMediaUrl(clip, kind, jobSlug) {
   const url = safeMediaUrl(directUrl);
   if (url) return url;
 
-  // If r2 key is present, route via backend storage media endpoint
+  // If r2 key is present, route directly through public R2 CDN or backend storage endpoint
   const r2Key = clip[keys[kind]];
   if (r2Key) {
+    if (CONFIG.R2_PUBLIC_URL) {
+      return `${CONFIG.R2_PUBLIC_URL}/${r2Key}`;
+    }
     const dlParam = kind === 'download' && clip.generated_title ? `?dl=${encodeURIComponent(clip.generated_title)}.mp4` : '';
     return `${CONFIG.BACKEND_URL}/api/v1/storage/media/${r2Key}${dlParam}`;
   }
