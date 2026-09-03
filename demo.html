@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Demo Dashboard — Shoort Clips</title>
+  <meta name="description" content="Explore the live interactive demo dashboard: review, approve, edit, and schedule strategic short clips with your Shoort Clips growth agent.">
+  <meta name="theme-color" content="#ff2d2d">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/app-redesign.css">
+  <link rel="stylesheet" href="css/logo-fixes.css">
+  <link rel="icon" type="image/png" href="assets/shoort-clips-mark.png">
+</head>
+<body class="workspace-body">
+  <div class="workspace-shell">
+    <aside class="app-sidebar">
+      <a class="app-wordmark" href="index.html"><span><img src="assets/shoort-clips-mark.png" alt=""></span><strong>shoort clips</strong></a>
+      <div class="workspace-switcher">
+        <small>WORKSPACE</small>
+        <div class="workspace-identity" id="workspace-brand-button" aria-label="Signed-up workspace identity"><i>SC</i><span><strong id="workspace-name">Reverence Media</strong><small id="workspace-subtitle">Demo Account</small></span></div>
+      </div>
+      <nav class="side-nav" aria-label="Workspace navigation">
+        <button class="active" data-view="overview"><span>⌁</span>Overview</button>
+        <button data-view="create"><span>＋</span>Create clips</button>
+        <button data-view="library"><span>▦</span>Clip library <i id="library-count">35</i></button>
+        <button data-view="editor"><span>✂</span>Video editor</button>
+        <button data-view="calendar"><span>◷</span>Test calendar</button>
+        <button data-view="intelligence"><span>↗</span>Intelligence</button>
+      </nav>
+      <div class="side-label">MANAGE</div>
+      <nav class="side-nav secondary-nav">
+        <button id="side-analytics"><span>▥</span>Analytics</button>
+      </nav>
+      <div class="pilot-meter" id="account-status">
+        <div><span>DEMO MODE</span><strong id="account-status-title">⚡ VIP Access</strong></div>
+        <small id="account-status-copy">Full demo features active: 35 clips loaded.</small>
+        <button type="button" id="sidebar-account-action">Demo Workspace</button>
+      </div>
+      <a class="back-home" href="index.html">← Back to website</a>
+    </aside>
+
+    <div class="workspace-main">
+      <header class="workspace-topbar" id="navbar-mount"></header>
+      <main class="workspace-content">
+        <div class="welcome-toast" id="welcome-toast" hidden><span>✦</span><div><strong>Demo workspace loaded.</strong><p>Explore all 35 clips in your library, test the editor, and schedule clips.</p></div><button type="button" aria-label="Dismiss">×</button></div>
+
+        <section class="workspace-view active" data-panel="overview">
+          <div class="page-heading">
+            <div>
+              <div class="page-kicker-row">
+                <span class="page-kicker" id="current-date"></span>
+                <span class="autopilot-chip" id="overview-autopilot-chip" role="status">
+                  <i class="chip-pulse"></i>
+                  <span id="overview-autopilot-label">Autopilot: OFF</span>
+                </span>
+              </div>
+              <h1 id="overview-heading">Start building your clip engine.</h1>
+              <p id="overview-subheading">Real clips, schedules, and channel insights will appear here as they are created.</p>
+            </div>
+            <div class="page-heading-actions">
+              <button class="primary-action" data-switch="create">Create clips from a video <span aria-hidden="true">→</span></button>
+            </div>
+          </div>
+          <section class="empty-product-hero" id="overview-empty" hidden>
+            <div class="empty-product-icon"><img src="assets/shoort-clips-mark.png" alt=""></div>
+            <div class="empty-product-copy">
+              <span class="card-kicker">DEMO MODE</span>
+              <h2 id="empty-title">Demo workspace active</h2>
+              <p id="empty-copy">Your projects and channel data are loaded and ready.</p>
+            </div>
+            <div class="empty-product-action"><span>NEXT STEP</span><div class="empty-actions"><button class="brief-primary" data-switch="library">Open Clip Library <span aria-hidden="true">→</span></button></div></div>
+          </section>
+          <div class="metrics-row" id="overview-metrics">
+            <article><span class="metric-icon coral">◫</span><div><small>Clips ready</small><strong id="metric-clips">35</strong><em>Ready for review</em></div></article>
+            <article><span class="metric-icon green">↗</span><div><small>Avg. viewed</small><strong id="metric-viewed">94.2%</strong><em>High retention</em></div></article>
+            <article><span class="metric-icon blue">◷</span><div><small>Scheduled</small><strong id="metric-scheduled">0</strong><em>Autopilot ready</em></div></article>
+            <article><span class="metric-icon amber">✦</span><div><small>Tests running</small><strong id="metric-tests">3</strong><em>A/B Hook tests</em></div></article>
+          </div>
+          <div class="overview-grid">
+            <section class="dashboard-card queue-card">
+              <div class="card-head">
+                <div>
+                  <span class="card-kicker">APPROVAL QUEUE</span>
+                  <h2>Clips waiting on you</h2>
+                </div>
+                <div class="card-head-actions">
+                  <button type="button" class="btn-approve-all" id="btn-batch-approve">⚡ Approve all</button>
+                  <button data-switch="library">Open library →</button>
+                </div>
+              </div>
+              <div class="data-empty-card" id="approval-queue-empty" hidden><span>▦</span><h3>No clips yet</h3><p>Submit a long-form video and finished clips will appear here for review.</p><button data-switch="create">Create your first clips</button></div>
+              <div class="mini-clips" id="approval-queue-list"></div>
+            </section>
+            <aside class="dashboard-card schedule-preview">
+              <div class="card-head"><div><span class="card-kicker">TEST MODE</span><h2>Upcoming schedule</h2></div><button data-switch="calendar">Open calendar →</button></div>
+              <div class="data-empty-card compact" id="schedule-empty-card"><span>◷</span><h3>No scheduled clips</h3><p>Your approved publishing plan will appear here.</p></div>
+              <div class="mini-schedule" id="schedule-preview-list"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="workspace-view" data-panel="create">
+          <div class="page-heading">
+            <div>
+              <span class="page-kicker">CLIP INGESTION</span>
+              <h1>Create high-retention clips.</h1>
+              <p>Upload a video or enter a YouTube link to generate punchy, formatted short clips with your brand rules.</p>
+            </div>
+          </div>
+          <div id="ingestion-mount"></div>
+          <div id="progress-mount"></div>
+        </section>
+
+        <section class="workspace-view" data-panel="library">
+          <div class="page-heading">
+            <div>
+              <span class="page-kicker">CLIP STUDIO</span>
+              <h1>Your Clip Library</h1>
+              <p>Review, edit captions, trim timestamps, approve clips, and download high-retention 1080p MP4s.</p>
+            </div>
+            <div class="page-heading-actions">
+              <button class="primary-action" data-switch="create">＋ Add new video</button>
+            </div>
+          </div>
+          <div id="studio-mount"></div>
+        </section>
+
+        <section class="workspace-view" data-panel="editor">
+          <div class="page-heading">
+            <div>
+              <span class="page-kicker">PRECISION EDITOR</span>
+              <h1>Video Editor & Trimmer</h1>
+              <p>Adjust start/end cut timestamps, preview transitions, and fine-tune your clip cuts.</p>
+            </div>
+          </div>
+          <div id="editor-mount"></div>
+        </section>
+
+        <section class="workspace-view" data-panel="calendar">
+          <div class="page-heading">
+            <div>
+              <div class="page-kicker-row">
+                <span class="page-kicker">SCHEDULE & AGENT CONTROLS</span>
+              </div>
+              <h1>Autonomous Publishing Calendar</h1>
+              <p>Organize when clips go live across your channels, manage test variations, and let Autopilot handle posting.</p>
+            </div>
+          </div>
+
+          <div class="calendar-workspace-grid">
+            <section class="dashboard-card calendar-surface">
+              <div class="calendar-header-bar">
+                <div class="calendar-title-group">
+                  <button type="button" class="btn-cal-nav" id="calendar-prev" aria-label="Previous month">‹</button>
+                  <h2 id="calendar-month">Calendar</h2>
+                  <button type="button" class="btn-cal-nav" id="calendar-next" aria-label="Next month">›</button>
+                </div>
+                <div class="calendar-legend">
+                  <span class="legend-item"><i class="dot dot-red"></i> Hook Test</span>
+                  <span class="legend-item"><i class="dot dot-pink"></i> Pacing Test</span>
+                  <span class="legend-item"><i class="dot dot-dark"></i> Standard Post</span>
+                </div>
+              </div>
+
+              <div class="calendar-week-headers">
+                <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+              </div>
+              <div class="calendar-grid-days" id="calendar-days"></div>
+              <div class="calendar-footer-note" id="calendar-empty-note">No clips scheduled for this month.</div>
+            </section>
+
+            <aside class="dashboard-card agent-controls-panel">
+              <div class="card-head">
+                <div>
+                  <span class="card-kicker">AGENT DIRECTIVES</span>
+                  <h2>Publishing Engine</h2>
+                </div>
+              </div>
+
+              <div class="control-group autopilot-primary-toggle">
+                <div class="control-label-row">
+                  <div>
+                    <strong>⚡ Autopilot Mode</strong>
+                    <small>Auto-approve and schedule ready clips</small>
+                  </div>
+                  <button type="button" class="switch" id="schedule-autopilot-switch" role="switch" aria-checked="false">
+                    <span class="switch-handle"></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <label for="schedule-frequency">Posting Frequency</label>
+                <select id="schedule-frequency" class="input-select">
+                  <option value="1">1 clip / day (Conservative)</option>
+                  <option value="3" selected>3 clips / day (Recommended)</option>
+                  <option value="5">5 clips / day (Aggressive)</option>
+                </select>
+              </div>
+
+              <div class="control-group">
+                <label for="schedule-test">Automated Testing Mode</label>
+                <select id="schedule-test" class="input-select">
+                  <option value="hook_angle" selected>Test 2 Hook Variations</option>
+                  <option value="pacing_test">Test Snappy vs Natural Pacing</option>
+                  <option value="off">No automated split-testing</option>
+                </select>
+              </div>
+
+              <div class="control-group">
+                <label for="schedule-approval">Approval Policy</label>
+                <select id="schedule-approval" class="input-select">
+                  <option value="every_clip">Manual review before posting</option>
+                  <option value="autopilot">Autonomous posting (Autopilot)</option>
+                </select>
+              </div>
+
+              <button type="button" class="btn-save-schedule" id="save-schedule">Save Publishing Controls</button>
+              <div class="control-note">✦ Active schedule is synced with your autonomous clipping engine.</div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="workspace-view" data-panel="intelligence">
+          <div class="page-heading compact-heading"><div><span class="page-kicker">CHANNEL INTELLIGENCE</span><h1>Know what to make before you make it.</h1><p>Real signals from your channel and generated clips become the next directive.</p></div><button class="primary-action" id="refresh-intelligence">Refresh analysis</button></div>
+          <section class="dashboard-card intelligence-empty" id="intelligence-empty" hidden><span>↗</span><h2>No channel analysis yet</h2><p>Connect your channel to generate evidence-based content opportunities.</p></section>
+          <div class="intelligence-grid" id="intelligence-data"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="auth-modal"></div>
+  <div class="modal-backdrop" id="brand-modal"></div>
+  <div class="modal-backdrop" id="auditor-modal"></div>
+  <div class="modal-backdrop" id="analytics-modal"></div>
+  <div class="modal-backdrop" id="clip-inspector-modal"></div>
+  <div class="app-toast" id="app-toast" role="status" aria-live="polite"></div>
+  <script>
+    const shoortClipsConfig = window.SHOORT_CLIPS_CONFIG || {};
+    window.SHOORT_CLIPS_CONFIG = {
+      ...shoortClipsConfig,
+      AUTH_ENABLED: false,
+      MOCK_MODE: false,
+      ALLOW_LOCAL_MEDIA: true,
+      DISABLE_BILLING_GATE: true,
+      API_BASE_URL: shoortClipsConfig.API_BASE_URL || 'http://localhost:8000'
+    };
+  </script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

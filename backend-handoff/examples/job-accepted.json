@@ -1,0 +1,15 @@
+{
+  "video_id": "vid_example",
+  "job_slug": "customer-interview",
+  "brand_id": "brand_example",
+  "status": "queued",
+  "stage": "INGESTION",
+  "progress": 0,
+  "message": "Source accepted; queued for processing.",
+  "requested_clip_count": 5,
+  "generated_clip_count": 0,
+  "attempt": 1,
+  "warnings": [],
+  "created_at": "2026-08-31T08:00:00Z",
+  "updated_at": "2026-08-31T08:00:00Z"
+}

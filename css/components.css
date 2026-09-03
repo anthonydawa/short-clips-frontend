@@ -1,5 +1,13 @@
 /* Short Clips AI — Reusable UI Components */
 
+.ingestion-notice, .ingestion-error { margin: 0 0 16px; font-size: 13px; line-height: 1.5; }
+.ingestion-notice { color: var(--text-secondary); }
+.ingestion-error { color: #b42318; }
+.upload-status { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 16px; font-size: 13px; }
+.upload-status progress { flex: 1; min-width: 120px; accent-color: var(--primary); }
+.dropzone[aria-disabled="true"] { cursor: default; opacity: .65; }
+.media-status { padding: 12px; font-size: 13px; line-height: 1.5; color: var(--text-secondary); }
+
 /* ==================== BUTTONS ==================== */
 .btn {
   align-items: center;
@@ -728,3 +736,165 @@
     max-width: 320px;
   }
 }
+
+/* ==================== DUAL-HANDLE RANGE SLIDER & SEGMENT PICKER ==================== */
+.segment-picker-box {
+  margin-top: 20px;
+  padding: 18px 20px;
+  background: #fbfaf8;
+  border: 1px solid #e7e4df;
+  border-radius: 12px;
+}
+.segment-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.segment-picker-header h4 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #171717;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.segment-badge {
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #fff0ef;
+  color: #ff2d2d;
+  font-size: 11px;
+  font-weight: 800;
+  font-family: var(--font-display);
+}
+.dual-range-container {
+  position: relative;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  margin: 10px 0 14px 0;
+}
+.dual-range-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: #e5e1dc;
+  border-radius: 4px;
+  z-index: 1;
+}
+.dual-range-highlight {
+  position: absolute;
+  height: 8px;
+  background: linear-gradient(90deg, #ff2d2d, #ff6b6b);
+  border-radius: 4px;
+  z-index: 2;
+  transition: left 0.05s ease, width 0.05s ease;
+}
+.dual-range-input {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  pointer-events: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background: none;
+  height: 8px;
+  z-index: 3;
+  margin: 0;
+}
+.dual-range-input::-webkit-slider-thumb {
+  pointer-events: auto;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #ff2d2d;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+  cursor: grab;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.dual-range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
+  box-shadow: 0 4px 12px rgba(255, 45, 45, 0.35);
+}
+.dual-range-input::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.25);
+  box-shadow: 0 0 0 6px rgba(255, 45, 45, 0.2);
+}
+.dual-range-input::-moz-range-thumb {
+  pointer-events: auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #ff2d2d;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+  cursor: grab;
+}
+.segment-inputs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 10px;
+}
+.segment-input-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.segment-input-item label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #686868;
+}
+.segment-input-item input {
+  font-family: 'DM Sans', monospace !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #171717 !important;
+  background: #ffffff !important;
+  border: 1px solid #dcd8d3 !important;
+  border-radius: 8px !important;
+  padding: 9px 12px !important;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.segment-input-item input:focus {
+  border-color: #ff2d2d !important;
+  box-shadow: 0 0 0 3px rgba(255, 45, 45, 0.12) !important;
+}
+.segment-presets-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+.preset-chip {
+  padding: 4px 10px;
+  border: 1px solid #e2ded9;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #555;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.preset-chip:hover {
+  border-color: #ff2d2d;
+  color: #ff2d2d;
+  background: #fff8f7;
+}
+.preset-chip.active {
+  border-color: #ff2d2d;
+  background: #ff2d2d;
+  color: #ffffff;
+}
+

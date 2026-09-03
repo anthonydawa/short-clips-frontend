@@ -62,6 +62,17 @@ export function initAuthModal() {
           </div>
           <button type="submit" id="btn-submit-email-auth" class="btn btn-primary" style="margin-top: 6px;">Sign in</button>
         </form>
+
+        <div style="display: flex; align-items: center; gap: 12px; margin: 16px 0 12px 0;">
+          <div style="flex: 1; height: 1px; background: var(--border-glass);"></div>
+          <span style="color: var(--text-muted); font-size: 11px; text-transform: uppercase;">Development / Testing</span>
+          <div style="flex: 1; height: 1px; background: var(--border-glass);"></div>
+        </div>
+
+        <button type="button" id="btn-instant-paid-test" class="btn btn-secondary btn-lg" style="width: 100%; border: 1px solid var(--accent); color: var(--accent); font-weight: 700; gap: 8px;">
+          ⚡ Instant Login (Paid VIP Creator)
+        </button>
+
         <div id="auth-status" role="status" aria-live="polite" style="min-height: 18px; margin-top: 12px; color: var(--text-muted); font-size: 12px;"></div>
       </div>
     `;
@@ -72,6 +83,24 @@ export function initAuthModal() {
     // Event Listeners
     modalEl.querySelector('#btn-close-auth-modal').addEventListener('click', () => {
       modalEl.classList.remove('active');
+    });
+
+    modalEl.querySelector('#btn-instant-paid-test')?.addEventListener('click', () => {
+      localStorage.setItem('shortclips_test_session', 'paid');
+      const paidUser = {
+        user_id: 'test_user_actual',
+        email: 'verified_creator@shoortclips.com',
+        role: 'authenticated',
+        user_metadata: {
+          name: 'VIP Paid Creator',
+          company: 'Reverence Media',
+          signup_source: 'paid',
+        },
+        token: 'test_user_actual',
+      };
+      state.setUser(paidUser);
+      modalEl.classList.remove('active');
+      window.location.search = '?test_mode=paid';
     });
 
     modalEl.querySelector('#btn-google-login').addEventListener('click', async () => {

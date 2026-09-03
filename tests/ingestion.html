@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Local ingestion regression fixture</title><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/components.css"></head>
+<body>
+  <h1>Local ingestion regression fixture</h1>
+  <p>Test-only synthetic workspace. No cloud processing or uploads.</p>
+  <div id="ingestion"></div><h2>Captured submission</h2><pre id="result">No submission yet.</pre>
+  <h2>Media regression fixture</h2>
+  <button id="load-media">Load sample clip</button><button id="clear-media">Clear sample clips</button>
+  <div id="studio"></div><div id="player"></div><div id="inspector"></div>
+  <script type="module">
+    window.SHOORT_CLIPS_CONFIG = { MOCK_MODE: true, AUTH_ENABLED: false };
+    const { state } = await import('/js/state.js');
+    const { api } = await import('/js/api.js');
+    const { renderIngestionCard } = await import('/js/components/ingestionCard.js');
+    const { renderClipStudio } = await import('/js/components/clipStudio.js');
+    const { renderVerticalPlayer } = await import('/js/components/verticalPlayer.js');
+    const { renderCaptionInspector } = await import('/js/components/captionInspector.js');
+    state.setUser({ user_id: 'local-fixture-user' });
+    state.setBrands([{ brand_id: 'local-fixture-brand' }]);
+    api.submitJob = async (payload) => {
+      document.querySelector('#result').textContent = JSON.stringify(payload, null, 2);
+      throw new Error('Fixture: submission captured; no server request sent.');
+    };
+    renderIngestionCard(document.querySelector('#ingestion'));
+    renderClipStudio(document.querySelector('#studio'));
+    renderVerticalPlayer(document.querySelector('#player'));
+    renderCaptionInspector(document.querySelector('#inspector'));
+    const job = { video_id: 'local-job' };
+    const sampleClip = {
+      video_id: job.video_id, clip_uid: 'local-clip', clip_id: 1,
+      generated_title: 'Sample <img src=x onerror=alert(1)>',
+      caption: 'Caption </textarea><script>bad()<' + '/script>',
+      start_seconds: 0, end_seconds: 30,
+      assets: { thumbnail: { url: `${location.origin}/assets/shoort-clips-mark.png` } },
+    };
+    api.getJobDetail = async () => ({ job, clips: [{ ...sampleClip, generated_title: 'Refreshed sample clip' }] });
+    document.querySelector('#load-media').addEventListener('click', () => { state.setActiveJob(job); state.setClips([sampleClip]); });
+    document.querySelector('#clear-media').addEventListener('click', () => state.setClips([]));
+  </script>
+</body>
+</html>

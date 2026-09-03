@@ -1,0 +1,20 @@
+Create one 10-second, 16:9 landscape shot for a five-part Shoort Clips product-launch film. Use the attached PNG as this shot's main visual and composition reference, and begin as close to that composition as possible. This is an illustrative product film, not footage of a real physical device or a literal software interface.
+
+STYLE AND CONTINUITY
+Premium, clean technology product presentation. Warm cream #FBFAF7, deep ink #111111, signature red #FF2D2D. Preserve the reference's materials, proportions, logo, object identities and arrangement. Controlled motion, smooth easing, soft studio lighting, restrained red signal paths, no neon sci-fi overload. Match these qualities across the five separately generated scenes. No YouTube corporate branding or suggestion of YouTube endorsement. No visual metric claims except the unaltered evidence in shot 4.
+
+AUDIO
+Use the same attached saved voice reference for every shot, as an off-screen narrator. Warm, confident medium-low male voice; neutral international English with clear American-style diction. Professional product-launch delivery, conversational and assured, energetic without shouting. Aim for approximately 150–165 words per minute, adjusting naturally so the complete line fits within this shot. Start near 0.2 seconds and finish by 9.5 seconds. Pronounce Shoort Clips as "Short Clips" and shoortclips dot com as "short clips dot com." Speak only the exact narration below, verbatim. No visible speaker, no lip-sync, no additional dialogue, no music, no sound effects, no ambient noise. Do not change voices between sentences.
+
+TEXT AND OUTPUT
+Do not generate subtitles, new titles, watermarks, text overlays, URLs, or button labels. Preserve any existing text in a supplied evidence screenshot. Editorial typography will be added after generation. No scene cuts within this shot, no fade-to-black, no extra end card.
+
+SHOT 04: REAL CLIENT CONTEXT
+REFERENCE IMAGE: 04-client-analytics.png
+
+ACTION
+Use the attached image as documentary evidence, not as an illustration to recreate. Begin and remain on the full existing framed YouTube Studio screenshot. Keep the entire dark screenshot rectangle pixel-stable, flat, front-facing, sharp, and readable for all ten seconds. Do not zoom, pan, tilt, animate the graph, count up the numbers, change the dates, move the cursor, remove the existing tooltip, or redraw any part of the analytics interface. Animate ONLY the existing red decorative accents in the OUTER cream border: from 0–2 seconds, softly illuminate an outer red accent; from 2–8 seconds, pass one very restrained light sweep along the outer border without touching the screenshot; from 8–10 seconds, settle the border into a soft red glow to connect with the closing shot. Keep the screenshot visible from the first frame to the last frame. It reports Last 365 days, Aug 24, 2025–Aug 23, 2026, not year-to-date. Preserve 42,070 views, 1.5K watch hours, +124 subscribers and all other original screen details exactly. Never add invented metrics or a start-date marker. Do not recreate it as a futuristic dashboard.
+
+EXACT NARRATION
+"After adding repurposed Shorts, this client saw momentum. Across the last year: over forty-two thousand views and one hundred twenty-four subscribers gained."
+

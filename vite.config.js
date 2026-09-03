@@ -32,6 +32,7 @@ export default defineConfig(({ mode }) => {
           trialRegister: resolve(import.meta.dirname, 'trial-register.html'),
           paymentSuccess: resolve(import.meta.dirname, 'payment-success.html'),
           app: resolve(import.meta.dirname, 'app.html'),
+          demo: resolve(import.meta.dirname, 'demo.html'),
         },
       },
     },

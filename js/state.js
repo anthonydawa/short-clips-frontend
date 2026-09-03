@@ -12,8 +12,14 @@ class AppState {
     this.activeJob = null;
     this.clips = [];
     this.selectedClip = null;
+    this.editingClip = null;
     this.analytics = null;
     this.isProcessing = false;
+    let storedAutopilot = false;
+    try {
+      storedAutopilot = localStorage.getItem('shoort_clips_autopilot') === 'true';
+    } catch (_) {}
+    this.autopilot = storedAutopilot;
     this.progress = {
       stage: 'IDLE',
       percent: 0,
@@ -79,18 +85,105 @@ class AppState {
     this.notify('ACTIVE_JOB_CHANGED', job);
   }
 
-  setClips(clips) {
-    this.clips = clips || [];
-    // Auto-select top viral clip if none selected
-    if (this.clips.length > 0 && !this.selectedClip) {
-      this.selectedClip = this.clips[0];
+  setAutopilot(enabled) {
+    this.autopilot = Boolean(enabled);
+    try {
+      localStorage.setItem('shoort_clips_autopilot', String(this.autopilot));
+    } catch (_) {}
+    this.notify('AUTOPILOT_CHANGED', this.autopilot);
+    if (this.autopilot) {
+      this.autoApproveReadyClips();
+    }
+  }
+
+  approveClip(clipUid, scheduledAt = null) {
+    const clip = this.clips.find((c) => String(c.clip_uid || c.clip_id) === String(clipUid));
+    if (!clip) return null;
+    clip.status = 'approved';
+    clip.approved_version = clip.version || 1;
+    if (!clip.scheduled_at) {
+      clip.scheduled_at = scheduledAt || new Date(Date.now() + 86400000).toISOString();
     }
     this.notify('CLIPS_UPDATED', this.clips);
+    this.notify('CLIP_APPROVED', clip);
+    return clip;
+  }
+
+  rejectClip(clipUid) {
+    const clip = this.clips.find((c) => String(c.clip_uid || c.clip_id) === String(clipUid));
+    if (!clip) return null;
+    clip.status = 'rejected';
+    this.notify('CLIPS_UPDATED', this.clips);
+    this.notify('CLIP_REJECTED', clip);
+    return clip;
+  }
+
+  autoApproveReadyClips() {
+    let changed = false;
+    const now = Date.now();
+    let slotIndex = 1;
+    this.clips.forEach((clip) => {
+      const status = String(clip.status || 'ready').toLowerCase();
+      if (status !== 'approved' && status !== 'scheduled' && status !== 'rejected') {
+        clip.status = 'approved';
+        clip.approved_version = clip.version || 1;
+        if (!clip.scheduled_at) {
+          clip.scheduled_at = new Date(now + slotIndex * 86400000).toISOString();
+          slotIndex++;
+        }
+        changed = true;
+      }
+    });
+    if (changed) {
+      this.notify('CLIPS_UPDATED', this.clips);
+      this.notify('AUTOPILOT_AUTO_APPROVED', this.clips);
+    }
+  }
+
+  setClips(clips) {
+    this.clips = clips || [];
+    if (this.autopilot) {
+      this.autoApproveReadyClips();
+    }
+    // Preserve the selection with fresh URLs, or select the new batch's first
+    // clip. Never keep an object from a different/cleared job in the player.
+    const previous = this.selectedClip;
+    this.selectedClip = this.clips.find((clip) => previous && (
+      (clip.clip_uid && clip.clip_uid === previous.clip_uid) ||
+      (clip.video_id && clip.video_id === previous.video_id && clip.clip_id != null && clip.clip_id === previous.clip_id)
+    )) || this.clips[0] || null;
+    this.notify('CLIPS_UPDATED', this.clips);
+    this.notify('SELECTED_CLIP_CHANGED', this.selectedClip);
   }
 
   setSelectedClip(clip) {
     this.selectedClip = clip;
     this.notify('SELECTED_CLIP_CHANGED', clip);
+  }
+
+  setEditingClip(clip) {
+    this.editingClip = clip;
+    this.notify('EDITING_CLIP_CHANGED', clip);
+  }
+
+  updateClip(updatedClip) {
+    if (!updatedClip) return;
+    const uid = String(updatedClip.clip_uid || updatedClip.clip_id);
+    const idx = this.clips.findIndex((c) => String(c.clip_uid || c.clip_id) === uid);
+    if (idx !== -1) {
+      this.clips[idx] = { ...this.clips[idx], ...updatedClip };
+    } else {
+      this.clips.unshift(updatedClip);
+    }
+    if (this.selectedClip && String(this.selectedClip.clip_uid || this.selectedClip.clip_id) === uid) {
+      this.selectedClip = { ...this.selectedClip, ...updatedClip };
+      this.notify('SELECTED_CLIP_CHANGED', this.selectedClip);
+    }
+    if (this.editingClip && String(this.editingClip.clip_uid || this.editingClip.clip_id) === uid) {
+      this.editingClip = { ...this.editingClip, ...updatedClip };
+      this.notify('EDITING_CLIP_CHANGED', this.editingClip);
+    }
+    this.notify('CLIPS_UPDATED', this.clips);
   }
 
   setAnalytics(analytics) {
@@ -109,7 +202,7 @@ class AppState {
         message,
       });
     }
-    this.isProcessing = stage !== 'COMPLETED' && stage !== 'FAILED' && stage !== 'IDLE';
+    this.isProcessing = !['COMPLETED', 'PARTIAL', 'FAILED', 'IDLE'].includes(stage);
     this.notify('PROGRESS_UPDATED', this.progress);
   }
 

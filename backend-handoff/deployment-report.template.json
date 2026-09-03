@@ -1,0 +1,94 @@
+{
+  "contract_version": "1.0.0",
+  "implementation_status": "not_started",
+  "environment": "staging",
+  "source_revision": null,
+  "api_image_digest": null,
+  "worker_image_digest": null,
+  "public_api_base_url": null,
+  "websocket_base_url": null,
+  "published_openapi_url": null,
+  "health_url": null,
+  "capabilities_url": null,
+  "frontend_origins": [],
+  "internal_dispatcher_url": "configured-server-side-do-not-send-to-browser",
+  "callbacks": {
+    "youtube_oauth_callback_url": null,
+    "creem_webhook_url": null,
+    "payment_success_url": null
+  },
+  "capabilities": {
+    "uploads": false,
+    "processing": false,
+    "youtube_import": false,
+    "youtube_connect": false,
+    "analytics": false,
+    "channel_audit": false,
+    "billing": false,
+    "clip_editing": false,
+    "approvals": false,
+    "schedule": false,
+    "publishing": false,
+    "websocket_progress": false
+  },
+  "limits": {
+    "max_upload_bytes": 2147483648,
+    "max_clip_count": 15,
+    "default_clip_count": 5,
+    "max_source_duration_seconds": null,
+    "max_concurrent_jobs_per_user": null,
+    "monthly_source_seconds_limit": null,
+    "source_retention_days": null,
+    "output_retention_days": null,
+    "signed_upload_ttl_seconds": null,
+    "signed_read_ttl_seconds": null
+  },
+  "providers": {
+    "r2": { "configured": false, "bucket_name_or_alias": null, "cors_verified": false },
+    "supabase": { "configured": false, "project_ref": null, "signing_mode": null, "access_migration_id": null, "security_advisors_clear": false },
+    "transcription": { "configured": false, "provider": null, "model": null, "region": null, "retention_note": null },
+    "clip_selection": { "configured": false, "provider": null, "model": null },
+    "youtube": { "oauth_configured": false, "analytics_configured": false, "publishing_configured": false, "api_audit_status": null, "source_import_mechanism": null },
+    "creem": { "configured": false, "mode": "test", "product_id_suffix_only": null, "webhook_verified": false }
+  },
+  "cloud": {
+    "gcp_project_id": null,
+    "region": null,
+    "public_service_name": null,
+    "private_dispatcher_service_name": null,
+    "worker_job_name": null,
+    "cloud_tasks_queues": [],
+    "scheduler_jobs": [],
+    "service_accounts": [],
+    "secret_names_only": []
+  },
+  "database": {
+    "migration_ids": [],
+    "rls_and_grants_reviewed": false,
+    "forged_signup_metadata_test_passed": false,
+    "legacy_access_rows_reconciled": false,
+    "backup_restore_tested": false
+  },
+  "progress_protocol": {
+    "polling_supported": true,
+    "websocket_ticket_supported": false,
+    "stages": ["INGESTION", "EXTRACTING_AUDIO", "TRANSCRIBING", "DIRECTING_CLIPS", "RENDERING_CLIPS", "COMPLETED", "FAILED", "CANCELLED"],
+    "event_replay_retention_seconds": null
+  },
+  "test_evidence": {
+    "commands": [],
+    "results_url_or_path": null,
+    "five_clip_test_job_id": null,
+    "five_clip_manifest_path": null,
+    "cross_tenant_denial_passed": false,
+    "restart_retry_idempotency_passed": false,
+    "r2_cors_range_expiry_passed": false,
+    "no_secret_log_scan_passed": false,
+    "provider_test_ids_redacted": true
+  },
+  "contract_changes": [],
+  "known_limitations": [],
+  "disabled_feature_reasons": {},
+  "secrets_included": false,
+  "frontend_action_required": []
+}

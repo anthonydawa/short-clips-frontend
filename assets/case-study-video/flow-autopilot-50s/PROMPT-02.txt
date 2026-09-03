@@ -1,0 +1,19 @@
+Create one 10-second, 16:9 landscape shot for a five-part Shoort Clips product-launch film. Use the attached PNG as this shot's main visual and composition reference, and begin as close to that composition as possible. This is an illustrative product film, not footage of a real physical device or a literal software interface.
+
+STYLE AND CONTINUITY
+Premium, clean technology product presentation. Warm cream #FBFAF7, deep ink #111111, signature red #FF2D2D. Preserve the reference's materials, proportions, logo, object identities and arrangement. Controlled motion, smooth easing, soft studio lighting, restrained red signal paths, no neon sci-fi overload. Match these qualities across the five separately generated scenes. No YouTube corporate branding or suggestion of YouTube endorsement. No visual metric claims except the unaltered evidence in shot 4.
+
+AUDIO
+Use the same attached saved voice reference for every shot, as an off-screen narrator. Warm, confident medium-low male voice; neutral international English with clear American-style diction. Professional product-launch delivery, conversational and assured, energetic without shouting. Aim for approximately 150–165 words per minute, adjusting naturally so the complete line fits within this shot. Start near 0.2 seconds and finish by 9.5 seconds. Pronounce Shoort Clips as "Short Clips" and shoortclips dot com as "short clips dot com." Speak only the exact narration below, verbatim. No visible speaker, no lip-sync, no additional dialogue, no music, no sound effects, no ambient noise. Do not change voices between sentences.
+
+TEXT AND OUTPUT
+Do not generate subtitles, new titles, watermarks, text overlays, URLs, or button labels. Preserve any existing text in a supplied evidence screenshot. Editorial typography will be added after generation. No scene cuts within this shot, no fade-to-black, no extra end card.
+
+SHOT 02: THE AGENT CUTS THE SHORTS
+REFERENCE IMAGE: 02-agent-cuts-shorts.png
+
+ACTION
+Begin with the attached reference composition: the same glossy black Shoort Clips agent at left, a horizontal video timeline at center, and vertical output cards at right. From 0–2 seconds, a red light pulse enters from the left, continuing the opening scene's direction. From 2–5 seconds, move a narrow red scan highlight across the existing timeline and pause on the already-highlighted segment. From 5–8 seconds, lift that segment into a vertical card that joins the existing output cards; keep the source landscape footage and its colors stable. The other cards shift only slightly to make space. From 8–10 seconds, align the cards, settle the camera, and send a red pulse toward the right edge for the scheduling scene. One controlled continuous shot, no frantic cuts. Do not generate captions within the video thumbnails.
+
+EXACT NARRATION
+"Your agent finds the strongest moments, cuts the Shorts, and prepares them for the feed. You keep creating. It handles the repurposing."

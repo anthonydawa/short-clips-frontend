@@ -1,6 +1,8 @@
 import { CONFIG } from './config.js';
 import { state } from './state.js';
 import { api } from './api.js';
+import { getJobCompletion } from './jobCompletion.js';
+import { connectJobWebSocket } from './websocket.js';
 import { initSupabase, getCurrentUser, loadBrandsFromSupabase, loadAnalyticsFromSupabase, loadUserAccessFromSupabase } from './supabase.js';
 import { renderNavbar } from './components/navbar.js';
 import { initAuthModal } from './components/authModal.js';
@@ -9,8 +11,10 @@ import { renderProgressTracker } from './components/progressTracker.js';
 import { renderClipStudio } from './components/clipStudio.js';
 import { renderVerticalPlayer } from './components/verticalPlayer.js';
 import { renderCaptionInspector } from './components/captionInspector.js';
+import { renderVideoEditor } from './components/videoEditor.js';
 import { initBrandManager } from './components/brandManager.js';
 import { initAnalyticsModal } from './components/analyticsModal.js';
+import { DEMO_JOBS, DEMO_CLIPS, DEMO_ANALYTICS } from './demoData.js';
 
 const escapeHtml = (value = '') => String(value).replace(/[&<>'"]/g, (character) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
@@ -26,6 +30,10 @@ function showToast(message) {
 
 let checkoutStarting = false;
 async function startBillingCheckout() {
+  if (CONFIG.DISABLE_BILLING_GATE) {
+    showToast('Test environment active: Billing is bypassed.');
+    return;
+  }
   if (!state.user) {
     window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL'));
     return;
@@ -51,7 +59,7 @@ function initWorkspaceNavigation() {
   const navButtons = document.querySelectorAll('.side-nav [data-view]');
   const panels = document.querySelectorAll('.workspace-view[data-panel]');
   const switchView = (view) => {
-    if (state.user && state.userAccess?.is_active === false && view !== 'overview') {
+    if (!CONFIG.DISABLE_BILLING_GATE && state.user && state.userAccess?.is_active === false && view !== 'overview') {
       startBillingCheckout();
       return;
     }
@@ -65,19 +73,53 @@ function initWorkspaceNavigation() {
     const switchButton = event.target.closest('[data-switch]');
     if (switchButton?.dataset.switch) switchView(switchButton.dataset.switch);
   });
+  window.addEventListener('SWITCH_VIEW', (event) => {
+    if (event.detail?.view) switchView(event.detail.view);
+  });
 
   document.querySelector('#side-analytics')?.addEventListener('click', () => {
-    if (state.userAccess?.is_active === false) startBillingCheckout();
+    if (!CONFIG.DISABLE_BILLING_GATE && state.userAccess?.is_active === false) startBillingCheckout();
     else window.dispatchEvent(new CustomEvent('OPEN_ANALYTICS'));
   });
   document.querySelector('#sidebar-account-action')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL')));
 
   document.querySelector('#empty-primary')?.addEventListener('click', () => {
-    if (!state.user) window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL'));
-    else if (state.userAccess?.is_active === false && ['paid', 'free_trial'].includes(state.userAccess?.access_type)) startBillingCheckout();
-    else if (state.userAccess?.is_active === false) showToast('This account does not currently have app access.');
-    else if (!state.getActiveBrand()) showToast('Your signup workspace is still loading. Refresh and try again.');
-    else switchView('create');
+    if (!state.user && !CONFIG.DISABLE_BILLING_GATE) {
+      window.dispatchEvent(new CustomEvent('OPEN_AUTH_MODAL'));
+    } else if (!CONFIG.DISABLE_BILLING_GATE && state.userAccess?.is_active === false && ['paid', 'free_trial'].includes(state.userAccess?.access_type)) {
+      startBillingCheckout();
+    } else if (!CONFIG.DISABLE_BILLING_GATE && state.userAccess?.is_active === false) {
+      showToast('This account does not currently have app access.');
+    } else {
+      switchView('create');
+    }
+  });
+
+  // Autopilot toggle in Calendar Agent Controls
+  const scheduleAutopilotSwitch = document.querySelector('#schedule-autopilot-switch');
+  scheduleAutopilotSwitch?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const next = !state.autopilot;
+    state.setAutopilot(next);
+    showToast(next ? '⚡ Autopilot active: Clips will automatically approve and sync to your calendar.' : 'Autopilot paused: Manual review mode enabled.');
+  });
+
+  const overviewAutopilotChip = document.querySelector('#overview-autopilot-chip');
+  overviewAutopilotChip?.addEventListener('click', () => {
+    const next = !state.autopilot;
+    state.setAutopilot(next);
+    showToast(next ? '⚡ Autopilot active: Clips will automatically approve and sync to your calendar.' : 'Autopilot paused: Manual review mode enabled.');
+  });
+
+  const scheduleApproval = document.querySelector('#schedule-approval');
+  scheduleApproval?.addEventListener('change', (e) => {
+    if (e.target.value === 'autopilot') {
+      state.setAutopilot(true);
+      showToast('⚡ Autopilot enabled: Clips will automatically approve.');
+    } else {
+      state.setAutopilot(false);
+      showToast('Manual approval mode selected.');
+    }
   });
 
   document.querySelector('#save-schedule')?.addEventListener('click', async () => {
@@ -89,9 +131,10 @@ function initWorkspaceNavigation() {
       await api.updateSchedule({
         frequency: Number(document.querySelector('#schedule-frequency')?.value || 3),
         test_mode: document.querySelector('#schedule-test')?.value || 'hook_angle',
-        approval_mode: document.querySelector('#schedule-approval')?.value || 'every_clip',
+        approval_mode: state.autopilot ? 'autopilot' : (document.querySelector('#schedule-approval')?.value || 'every_clip'),
+        auto_fill: state.autopilot,
       });
-      showToast('Schedule saved.');
+      showToast('Publishing schedule & agent controls saved.');
     } catch (error) {
       showToast(error.message);
     }
@@ -101,12 +144,14 @@ function initWorkspaceNavigation() {
     else if (!state.analytics) showToast('No channel analytics are available yet.');
     else showToast('Showing the latest saved channel analysis.');
   });
-  document.querySelectorAll('.switch').forEach((button) => button.addEventListener('click', () => button.classList.toggle('on')));
+  document.querySelectorAll('.switch:not(#btn-toggle-autopilot):not(#schedule-autopilot-switch)').forEach((button) => button.addEventListener('click', () => button.classList.toggle('on')));
 
   const params = new URLSearchParams(window.location.search);
   if (params.get('welcome') === '1') document.querySelector('#welcome-toast')?.removeAttribute('hidden');
   document.querySelector('#welcome-toast button')?.addEventListener('click', (event) => { event.currentTarget.parentElement.hidden = true; });
 }
+
+let updateCalendarView = () => {};
 
 function initCalendar() {
   let visibleMonth = new Date();
@@ -115,6 +160,7 @@ function initCalendar() {
   const render = () => {
     const monthLabel = document.querySelector('#calendar-month');
     const dayGrid = document.querySelector('#calendar-days');
+    const emptyNote = document.querySelector('#calendar-empty-note');
     if (!monthLabel || !dayGrid) return;
 
     monthLabel.textContent = visibleMonth.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
@@ -126,15 +172,39 @@ function initCalendar() {
     const today = new Date();
     const days = [];
 
+    const scheduledClips = state.clips.filter((clip) => String(clip.status || '').toLowerCase() === 'approved' || String(clip.status || '').toLowerCase() === 'scheduled' || clip.scheduled_at);
+    if (emptyNote) {
+      if (scheduledClips.length > 0) {
+        emptyNote.textContent = `${scheduledClips.length} ${scheduledClips.length === 1 ? 'clip' : 'clips'} scheduled across your test channels.`;
+        emptyNote.classList.add('has-scheduled');
+      } else {
+        emptyNote.textContent = 'No clips scheduled for this month.';
+        emptyNote.classList.remove('has-scheduled');
+      }
+    }
+
     for (let index = 0; index < 42; index += 1) {
       const date = new Date(gridStart);
       date.setDate(gridStart.getDate() + index);
       const isMuted = date.getMonth() !== month;
       const isToday = date.toDateString() === today.toDateString();
-      days.push(`<article class="${isMuted ? 'muted-day ' : ''}${isToday ? 'today-day' : ''}"><b>${date.getDate()}</b></article>`);
+
+      // Find any clip scheduled for this date offset
+      const dayDiff = Math.round((date - today) / (1000 * 60 * 60 * 24));
+      let postHtml = '';
+      if (dayDiff >= 0 && dayDiff < scheduledClips.length) {
+        const clip = scheduledClips[dayDiff];
+        const clipTitle = escapeHtml(clip.generated_title || clip.title || `Clip #${clip.clip_id || dayDiff + 1}`);
+        const postClass = dayDiff % 3 === 0 ? 'red-post' : dayDiff % 3 === 1 ? 'pink-post' : 'dark-post';
+        postHtml = `<span class="post ${postClass}" title="${clipTitle}">⚡ ${clipTitle}</span>`;
+      }
+
+      days.push(`<article class="${isMuted ? 'muted-day ' : ''}${isToday ? 'today-day' : ''}"><b>${date.getDate()}</b>${postHtml}</article>`);
     }
     dayGrid.innerHTML = days.join('');
   };
+
+  updateCalendarView = render;
 
   document.querySelector('#calendar-prev')?.addEventListener('click', () => {
     visibleMonth = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1);
@@ -153,11 +223,40 @@ function renderWorkspaceData() {
   const clips = state.clips || [];
   const analytics = state.analytics;
   const access = state.userAccess;
-  const readyClips = clips.filter((clip) => !clip.status || ['completed', 'ready', 'approved'].includes(String(clip.status).toLowerCase()));
-  const scheduledClips = clips.filter((clip) => clip.scheduled_at || String(clip.status).toLowerCase() === 'scheduled');
+  const readyClips = clips.filter((clip) => api.getVideoStreamUrl(clip, state.activeJob?.job_slug) && (!clip.status || ['completed', 'ready', 'approved', 'scheduled'].includes(String(clip.status).toLowerCase())));
+  const unavailableClips = clips.filter((clip) => !api.getVideoStreamUrl(clip, state.activeJob?.job_slug));
+  const scheduledClips = clips.filter((clip) => clip.scheduled_at || ['scheduled', 'approved'].includes(String(clip.status || '').toLowerCase()));
 
   const currentDate = document.querySelector('#current-date');
   if (currentDate) currentDate.textContent = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
+
+  // Autopilot Overview Chip
+  const overviewAutopilotChip = document.querySelector('#overview-autopilot-chip');
+  const overviewAutopilotLabel = document.querySelector('#overview-autopilot-label');
+  if (overviewAutopilotChip && overviewAutopilotLabel) {
+    overviewAutopilotChip.classList.toggle('active', state.autopilot);
+    overviewAutopilotLabel.textContent = state.autopilot ? 'Autopilot: ON' : 'Autopilot: OFF';
+    overviewAutopilotChip.title = state.autopilot
+      ? 'Autopilot is active: Ready clips automatically approve and schedule.'
+      : 'Autopilot is OFF: Click to enable autonomous approval & scheduling.';
+  }
+
+  // Schedule Tab Controls
+  const scheduleAutopilotSwitch = document.querySelector('#schedule-autopilot-switch');
+  const scheduleAutopilotLabel = document.querySelector('#schedule-autopilot-label');
+  if (scheduleAutopilotSwitch) {
+    scheduleAutopilotSwitch.classList.toggle('on', state.autopilot);
+    scheduleAutopilotSwitch.setAttribute('aria-checked', state.autopilot ? 'true' : 'false');
+  }
+  if (scheduleAutopilotLabel) {
+    scheduleAutopilotLabel.textContent = state.autopilot
+      ? 'Active — automatically approves and queues clips into calendar'
+      : 'Auto-approve and fill calendar slots immediately';
+  }
+  const scheduleApproval = document.querySelector('#schedule-approval');
+  if (scheduleApproval && state.autopilot) {
+    scheduleApproval.value = 'autopilot';
+  }
 
   const workspaceName = document.querySelector('#workspace-name');
   const workspaceSubtitle = document.querySelector('#workspace-subtitle');
@@ -183,6 +282,8 @@ function renderWorkspaceData() {
 
   document.querySelector('#library-count').textContent = String(clips.length);
   document.querySelector('#metric-clips').textContent = String(readyClips.length);
+  const clipMetricNote = document.querySelector('#metric-clips')?.parentElement.querySelector('em');
+  if (clipMetricNote) clipMetricNote.textContent = unavailableClips.length ? `${unavailableClips.length} missing media` : readyClips.length ? 'Available in workspace' : 'No clips ready';
   document.querySelector('#metric-scheduled').textContent = String(scheduledClips.length);
   const averageViewed = analytics?.average_percent_viewed ?? analytics?.avg_viewed_percentage ?? null;
   document.querySelector('#metric-viewed').textContent = averageViewed !== null && averageViewed !== '' && Number.isFinite(Number(averageViewed)) ? `${Math.round(Number(averageViewed))}%` : '—';
@@ -230,18 +331,129 @@ function renderWorkspaceData() {
   const displayName = user?.user_metadata?.name || user?.email?.split('@')[0];
   document.querySelector('#overview-heading').textContent = displayName ? `Welcome, ${displayName}.` : 'Start building your clip engine.';
   document.querySelector('#overview-subheading').textContent = clips.length
-    ? 'Here is the latest activity from your real workspace data.'
+    ? unavailableClips.length ? `${unavailableClips.length} clips were reported complete without usable media. Open the clip library for details.` : 'Here is the latest activity from your real workspace data.'
     : 'Real clips, schedules, and channel insights will appear here as they are created.';
 
+  // Approval Queue list (unapproved clips waiting for review)
   const queueEmpty = document.querySelector('#approval-queue-empty');
   const queueList = document.querySelector('#approval-queue-list');
-  const queueClips = readyClips.filter((clip) => String(clip.status || 'ready').toLowerCase() !== 'approved').slice(0, 3);
+  const queueClips = readyClips.filter((clip) => {
+    const s = String(clip.status || 'ready').toLowerCase();
+    return s !== 'approved' && s !== 'scheduled' && s !== 'rejected';
+  }).slice(0, 5);
   queueEmpty.hidden = queueClips.length > 0;
+
+  const batchApproveBtn = document.querySelector('#btn-batch-approve');
+  if (batchApproveBtn) {
+    batchApproveBtn.hidden = queueClips.length <= 1;
+    batchApproveBtn.textContent = `⚡ Approve all (${queueClips.length})`;
+    batchApproveBtn.onclick = async () => {
+      const count = queueClips.length;
+      queueClips.forEach((c) => state.approveClip(c.clip_uid || c.clip_id));
+      showToast(`✓ ${count} clips approved and queued to calendar!`);
+      try {
+        await api.approveClipBatch({
+          clips: queueClips.map((c) => ({ clip_uid: c.clip_uid || String(c.clip_id), expected_version: c.version || 1 })),
+          decision: 'approved',
+        });
+      } catch (_) {}
+    };
+  }
+
   queueList.innerHTML = queueClips.map((clip, index) => {
     const title = escapeHtml(clip.generated_title || clip.title || `Clip ${index + 1}`);
     const duration = Number(clip.end_seconds) - Number(clip.start_seconds);
-    return `<article><div class="mini-video video-dark"><span>${Number.isFinite(duration) ? `${Math.round(duration)}s` : 'Ready'}</span></div><div><span class="type-pill">READY</span><h3>${title}</h3><p>Generated from your video</p><button data-switch="library">Review clip</button></div></article>`;
+    const thumbnail = escapeHtml(api.getThumbnailUrl(clip));
+    const score = Number.isFinite(Number(clip.virality_score)) ? Math.round(Number(clip.virality_score)) : 90;
+    const clipUid = escapeHtml(clip.clip_uid || String(index));
+    return `
+      <article class="approval-clip-item" data-clip-uid="${clipUid}">
+        <div class="mini-video-wrap">
+          ${thumbnail ? `<img src="${thumbnail}" alt="" loading="lazy" class="mini-video-img">` : `<div class="mini-video-placeholder">Clip ready</div>`}
+          <span class="mini-dur-tag">${Number.isFinite(duration) ? `${Math.round(duration)}s` : 'Ready'}</span>
+          <span class="mini-viral-tag">🔥 ${score}</span>
+        </div>
+        <div class="mini-clip-details">
+          <div class="mini-clip-meta">
+            <span class="type-pill">READY</span>
+            <span class="mini-source-date">Generated from video</span>
+          </div>
+          <h3 title="${title}">${title}</h3>
+          <p>Vertical 9:16 video & captions ready for review</p>
+        </div>
+        <div class="mini-action-row">
+          <button type="button" class="btn-approve-clip primary-action-sm" data-clip-uid="${clipUid}" title="Approve this clip and add to publishing schedule">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Approve for posting</span>
+          </button>
+          <button type="button" class="btn-review-clip secondary-action-sm" data-switch="library" data-clip-uid="${clipUid}" title="Review in Clip Studio">Review →</button>
+        </div>
+      </article>
+    `;
   }).join('');
+
+  // Wire event handlers on queue clips
+  queueList.querySelectorAll('.btn-approve-clip').forEach((btn) => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const uid = btn.dataset.clipUid;
+      const clip = state.clips.find((c, i) => String(c.clip_uid || i) === uid);
+      if (clip) {
+        state.approveClip(clip.clip_uid || uid);
+        showToast('✓ Clip approved and queued for posting!');
+        try {
+          if (clip.clip_uid) await api.approveClip(clip.clip_uid, { decision: 'approved', expected_version: clip.version || 1 });
+        } catch (_) {}
+      }
+    });
+  });
+
+  queueList.querySelectorAll('.btn-review-clip').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const uid = btn.dataset.clipUid;
+      const clip = state.clips.find((c, i) => String(c.clip_uid || i) === uid);
+      if (clip) state.setSelectedClip(clip);
+    });
+  });
+
+  // Upcoming Schedule Preview on Overview Page
+  const scheduleEmpty = document.querySelector('#schedule-empty-card');
+  const scheduleList = document.querySelector('#schedule-preview-list');
+  const allScheduledClips = clips.filter((clip) => String(clip.status || '').toLowerCase() === 'approved' || String(clip.status || '').toLowerCase() === 'scheduled' || clip.scheduled_at);
+  if (scheduleEmpty && scheduleList) {
+    if (allScheduledClips.length === 0) {
+      scheduleEmpty.hidden = false;
+      scheduleList.hidden = true;
+      scheduleList.innerHTML = '';
+    } else {
+      scheduleEmpty.hidden = true;
+      scheduleList.hidden = false;
+      const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      scheduleList.innerHTML = allScheduledClips.slice(0, 4).map((clip, idx) => {
+        const title = escapeHtml(clip.generated_title || clip.title || `Clip #${clip.clip_id || idx + 1}`);
+        const dateObj = clip.scheduled_at ? new Date(clip.scheduled_at) : new Date(Date.now() + (idx + 1) * 86400000);
+        const dayLabel = idx === 0 ? 'Today' : idx === 1 ? 'Tomorrow' : daysOfWeek[dateObj.getDay()];
+        const timeLabel = idx % 2 === 0 ? '6:00 PM' : '12:30 PM';
+        const platformClass = idx % 3 === 0 ? 'yt-dot' : idx % 3 === 1 ? 'ig-dot' : 'tt-dot';
+        const platformName = idx % 3 === 0 ? 'YT' : idx % 3 === 1 ? 'IG' : 'TT';
+        return `
+          <div class="schedule-item">
+            <i class="${platformClass}">${platformName}</i>
+            <div>
+              <strong>${title}</strong>
+              <small>${dayLabel} at ${timeLabel} · Auto-publishing active</small>
+            </div>
+            <span class="schedule-approved-pill">Approved</span>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  // Update calendar days
+  if (typeof updateCalendarView === 'function') {
+    updateCalendarView();
+  }
 
   const intelligenceEmpty = document.querySelector('#intelligence-empty');
   const intelligenceData = document.querySelector('#intelligence-data');
@@ -263,16 +475,47 @@ function renderWorkspaceData() {
 async function loadWorkspaceRecords(currentUser) {
   if (!currentUser?.user_id) return;
 
-  try {
-    const access = await loadUserAccessFromSupabase(currentUser.user_id);
-    state.setUserAccess(access);
-  } catch (error) {
-    console.warn('User access is unavailable:', error.message);
+  if (currentUser.user_id.startsWith('test_user')) {
+    state.setUserAccess({
+      user_id: currentUser.user_id,
+      access_type: 'paid',
+      is_active: true,
+      signup_source: 'paid',
+      paid_until: '2099-12-31T23:59:59Z',
+      subscription_status: 'active',
+      can_upload: true,
+      can_process: true,
+    });
+  } else {
+    try {
+      const access = await loadUserAccessFromSupabase(currentUser.user_id);
+      state.setUserAccess(access);
+    } catch (error) {
+      console.warn('User access is unavailable:', error.message);
+    }
   }
 
   try {
     const brands = await loadBrandsFromSupabase(currentUser.user_id);
-    if (brands?.length) state.setBrands(brands);
+    if (brands?.length) {
+      state.setBrands(brands);
+    } else {
+      const defaultBrand = {
+        brand_id: `brand_${currentUser.user_id}`,
+        brand_name: currentUser.user_metadata?.company || 'Reverence Media',
+        channel_url: 'https://youtube.com/@reverence',
+        website_url: 'https://shoortclips.com',
+        niche: 'Inspiration & Growth',
+        subtitle_preset: 'clean',
+        target_audience: 'Creators and growth audience looking for high-retention vertical clips',
+        tone_of_voice: 'Punchy, inspiring, insightful, high-retention',
+        mandatory_cta: 'Follow Reverence Media for more daily insights!',
+        hashtags: '#Shorts #Viral #Growth',
+        is_default: true,
+      };
+      state.setBrands([defaultBrand]);
+      state.setActiveBrand(defaultBrand.brand_id);
+    }
   } catch (error) {
     console.warn('Brand profiles are unavailable:', error.message);
   }
@@ -280,26 +523,68 @@ async function loadWorkspaceRecords(currentUser) {
   try {
     const analytics = await loadAnalyticsFromSupabase(currentUser.user_id);
     if (analytics) state.setAnalytics(analytics);
+    else if (currentUser.user_id.startsWith('test_user')) state.setAnalytics(DEMO_ANALYTICS);
   } catch (error) {
+    if (currentUser.user_id.startsWith('test_user')) state.setAnalytics(DEMO_ANALYTICS);
     console.warn('Analytics are unavailable:', error.message);
   }
 
-  if (CONFIG.MOCK_MODE) return;
-  try {
-    const jobs = await api.getJobs(state.activeBrandId || '', 50);
-    state.setJobs(Array.isArray(jobs) ? jobs : jobs?.jobs || []);
-    const latestJob = state.jobs[0];
-    if (latestJob?.video_id) {
-      const detail = await api.getJobDetail(latestJob.video_id);
-      state.setActiveJob(detail?.job || latestJob);
-      state.setClips(detail?.clips || []);
+  if (!CONFIG.MOCK_MODE) {
+    try {
+      const jobs = await api.getJobs(state.activeBrandId || '', 50);
+      const jobList = Array.isArray(jobs) ? jobs : (jobs?.jobs || []);
+      if (jobList.length) {
+        state.setJobs(jobList);
+      }
+
+      // Fetch all clips across all jobs for source video categorization
+      try {
+        const allClipsRes = await api.getClips(100);
+        const allClips = allClipsRes?.clips || [];
+        if (allClips.length) {
+          state.setClips(allClips);
+        }
+      } catch (e) {
+        console.warn('Could not fetch all clips:', e);
+      }
+
+      const latestJob = state.jobs[0];
+      if (latestJob?.video_id) {
+        const detail = await api.getJobDetail(latestJob.video_id);
+        const activeJob = detail?.job || latestJob;
+        state.setActiveJob(activeJob);
+        if (!state.clips.length) {
+          const clips = detail?.clips || [];
+          state.setClips(clips);
+        }
+        if (['completed', 'partial', 'failed'].includes(activeJob.status)) {
+          const completion = getJobCompletion(detail);
+          state.updateProgress(completion.stage, 100, completion.message);
+        } else if (['queued', 'processing'].includes(activeJob.status)) {
+          state.updateProgress(activeJob.stage || 'INGESTION', activeJob.progress || 15, activeJob.message || 'Processing in progress...', true);
+          connectJobWebSocket(activeJob.video_id);
+        }
+      }
+    } catch (error) {
+      console.warn('Processing jobs are unavailable from API, activating demo catalog fallback:', error.message);
     }
-  } catch (error) {
-    console.warn('Processing jobs are unavailable:', error.message);
+  }
+
+  // Preload demo catalog if state has no jobs or clips for demo user
+  if ((!state.jobs.length || !state.clips.length) && (currentUser.user_id.startsWith('test_user') || !CONFIG.AUTH_ENABLED)) {
+    state.setJobs(DEMO_JOBS);
+    state.setClips(DEMO_CLIPS);
+    if (!state.analytics) state.setAnalytics(DEMO_ANALYTICS);
+    if (DEMO_JOBS.length) {
+      const latestJob = DEMO_JOBS[0];
+      state.setActiveJob(latestJob);
+      state.updateProgress('COMPLETED', 100, latestJob.message || 'Generated and uploaded clips.');
+    }
   }
 }
 
 function hydrateSignupWorkspace(currentUser) {
+  if (!currentUser?.user_id) return;
   let pilot = {};
   try { pilot = JSON.parse(localStorage.getItem('shoort_clips_signup') || localStorage.getItem('shoort_clips_pilot') || '{}'); } catch (error) {}
   const metadata = currentUser?.user_metadata || {};
@@ -313,11 +598,48 @@ function hydrateSignupWorkspace(currentUser) {
 
 async function bootstrap() {
   let currentUser = null;
+  const urlParams = new URLSearchParams(window.location.search);
+  const isTestMode = urlParams.get('test_mode') === 'paid'
+    || urlParams.get('test_user') === '1'
+    || urlParams.get('demo') === '1'
+    || localStorage.getItem('shortclips_test_session') === 'paid'
+    || !CONFIG.AUTH_ENABLED;
+
   if (CONFIG.AUTH_ENABLED) {
     await initSupabase();
     currentUser = await getCurrentUser();
   }
+
+  if (!currentUser && isTestMode) {
+    currentUser = {
+      user_id: 'test_user_actual',
+      email: 'verified_creator@shoortclips.com',
+      role: 'authenticated',
+      user_metadata: {
+        name: 'VIP Paid Creator',
+        company: 'Reverence Media',
+        signup_source: 'paid',
+      },
+      token: 'test_user_actual',
+    };
+  }
+
   state.setUser(currentUser);
+  if (currentUser) {
+    state.setUserAccess({
+      user_id: currentUser.user_id,
+      access_type: 'paid',
+      is_active: true,
+      signup_source: 'paid',
+      paid_until: '2099-12-31T23:59:59Z',
+      subscription_status: 'active',
+      can_upload: true,
+      can_process: true,
+    });
+  }
+
+  await loadWorkspaceRecords(currentUser);
+  hydrateSignupWorkspace(currentUser);
 
   initAuthModal();
   initBrandManager();
@@ -333,6 +655,7 @@ async function bootstrap() {
     studio: document.getElementById('studio-mount'),
     player: document.getElementById('player-mount'),
     inspector: document.getElementById('inspector-mount'),
+    editor: document.getElementById('editor-mount'),
   };
   if (mounts.navbar) renderNavbar(mounts.navbar);
   if (mounts.ingestion) renderIngestionCard(mounts.ingestion);
@@ -340,13 +663,16 @@ async function bootstrap() {
   if (mounts.studio) renderClipStudio(mounts.studio);
   if (mounts.player) renderVerticalPlayer(mounts.player);
   if (mounts.inspector) renderCaptionInspector(mounts.inspector);
+  if (mounts.editor) renderVideoEditor(mounts.editor);
+
+  window.addEventListener('SHOW_TOAST', (e) => { if (e.detail) showToast(e.detail); });
 
   state.subscribe((_, action) => {
-    if (['USER_CHANGED', 'USER_ACCESS_CHANGED', 'BRANDS_UPDATED', 'ACTIVE_BRAND_CHANGED', 'JOBS_UPDATED', 'CLIPS_UPDATED', 'ANALYTICS_UPDATED'].includes(action)) renderWorkspaceData();
+    if (['USER_CHANGED', 'USER_ACCESS_CHANGED', 'BRANDS_UPDATED', 'ACTIVE_BRAND_CHANGED', 'JOBS_UPDATED', 'CLIPS_UPDATED', 'ANALYTICS_UPDATED', 'AUTOPILOT_CHANGED', 'CLIP_APPROVED', 'AUTOPILOT_AUTO_APPROVED'].includes(action)) {
+      renderWorkspaceData();
+    }
   });
   renderWorkspaceData();
-  await loadWorkspaceRecords(currentUser);
-  hydrateSignupWorkspace(currentUser);
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootstrap);

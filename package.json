@@ -5,8 +5,9 @@
   "description": "Shoort Clips — agentic short-form growth platform and marketing site",
   "type": "module",
   "scripts": {
+    "test": "node --test tests/*.test.mjs",
     "dev": "vite",
-    "build": "vite build --mode public-preview",
+    "build": "vite build",
     "build:preview": "vite build --mode public-preview",
     "build:full": "vite build",
     "preview": "vite preview",

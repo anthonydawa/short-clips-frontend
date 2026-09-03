@@ -1,0 +1,20 @@
+Create one 10-second, 16:9 landscape shot for a five-part Shoort Clips product-launch film. Use the attached PNG as this shot's main visual and composition reference, and begin as close to that composition as possible. This is an illustrative product film, not footage of a real physical device or a literal software interface.
+
+STYLE AND CONTINUITY
+Premium, clean technology product presentation. Warm cream #FBFAF7, deep ink #111111, signature red #FF2D2D. Preserve the reference's materials, proportions, logo, object identities and arrangement. Controlled motion, smooth easing, soft studio lighting, restrained red signal paths, no neon sci-fi overload. Match these qualities across the five separately generated scenes. No YouTube corporate branding or suggestion of YouTube endorsement. No visual metric claims except the unaltered evidence in shot 4.
+
+AUDIO
+Use the same attached saved voice reference for every shot, as an off-screen narrator. Warm, confident medium-low male voice; neutral international English with clear American-style diction. Professional product-launch delivery, conversational and assured, energetic without shouting. Aim for approximately 150–165 words per minute, adjusting naturally so the complete line fits within this shot. Start near 0.2 seconds and finish by 9.5 seconds. Pronounce Shoort Clips as "Short Clips" and shoortclips dot com as "short clips dot com." Speak only the exact narration below, verbatim. No visible speaker, no lip-sync, no additional dialogue, no music, no sound effects, no ambient noise. Do not change voices between sentences.
+
+TEXT AND OUTPUT
+Do not generate subtitles, new titles, watermarks, text overlays, URLs, or button labels. Preserve any existing text in a supplied evidence screenshot. Editorial typography will be added after generation. No scene cuts within this shot, no fade-to-black, no extra end card.
+
+SHOT 05: KEEP CREATING
+REFERENCE IMAGE: 05-autopilot-cta.png
+
+ACTION
+Begin with the attached reference: the same Shoort Clips agent device on the right-hand cream pedestal, vertical clips and a small calendar above it, and clear dark negative space on the left for a later editorial CTA. From 0–2 seconds, a soft red pulse continues from the previous scene into the existing red connecting paths. From 2–6 seconds, the vertical cards and calendar make one small elegant settling movement; the agent's logo receives a restrained red rim-light accent without changing shape. From 6–10 seconds, hold the composition nearly still, with only a gentle existing light-path pulse. Keep the left half completely clear and visually calm for the CTA. Do not generate the URL, any lettering, new objects, a talking face, or additional interface panels. End on the same stable hero composition, not black.
+
+EXACT NARRATION
+"Keep creating. Leave the clips, the schedule, and the learning to your agent. Put your workflow on autopilot at shoortclips dot com."
+

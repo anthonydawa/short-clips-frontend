@@ -1,0 +1,15 @@
+{
+  "total_tracked_videos": 0,
+  "average_percent_viewed": null,
+  "active_tests": 0,
+  "optimal_length_bucket": null,
+  "target_duration_min_seconds": null,
+  "target_duration_max_seconds": null,
+  "hook_directive": "",
+  "pacing_directive": "",
+  "cta_directive": "",
+  "data_status": "not_connected",
+  "last_synced_at": null,
+  "evidence": [],
+  "warnings": []
+}

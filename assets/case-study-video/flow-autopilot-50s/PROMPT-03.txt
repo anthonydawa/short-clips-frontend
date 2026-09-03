@@ -1,0 +1,20 @@
+Create one 10-second, 16:9 landscape shot for a five-part Shoort Clips product-launch film. Use the attached PNG as this shot's main visual and composition reference, and begin as close to that composition as possible. This is an illustrative product film, not footage of a real physical device or a literal software interface.
+
+STYLE AND CONTINUITY
+Premium, clean technology product presentation. Warm cream #FBFAF7, deep ink #111111, signature red #FF2D2D. Preserve the reference's materials, proportions, logo, object identities and arrangement. Controlled motion, smooth easing, soft studio lighting, restrained red signal paths, no neon sci-fi overload. Match these qualities across the five separately generated scenes. No YouTube corporate branding or suggestion of YouTube endorsement. No visual metric claims except the unaltered evidence in shot 4.
+
+AUDIO
+Use the same attached saved voice reference for every shot, as an off-screen narrator. Warm, confident medium-low male voice; neutral international English with clear American-style diction. Professional product-launch delivery, conversational and assured, energetic without shouting. Aim for approximately 150–165 words per minute, adjusting naturally so the complete line fits within this shot. Start near 0.2 seconds and finish by 9.5 seconds. Pronounce Shoort Clips as "Short Clips" and shoortclips dot com as "short clips dot com." Speak only the exact narration below, verbatim. No visible speaker, no lip-sync, no additional dialogue, no music, no sound effects, no ambient noise. Do not change voices between sentences.
+
+TEXT AND OUTPUT
+Do not generate subtitles, new titles, watermarks, text overlays, URLs, or button labels. Preserve any existing text in a supplied evidence screenshot. Editorial typography will be added after generation. No scene cuts within this shot, no fade-to-black, no extra end card.
+
+SHOT 03: SCHEDULE, LEARN, REFINE
+REFERENCE IMAGE: 03-agent-schedules.png
+
+ACTION
+Begin with the attached reference: the same agent at lower left, the dark scheduling grid at center-right, clip cards, a clock, and the red feedback path. From 0–2 seconds, introduce a red light pulse from the left. From 2–6 seconds, gently move two of the existing clip cards into open cells of the calendar. Do not fill every cell or imply a fixed daily posting promise. From 6–8 seconds, move one soft red pulse around the existing feedback loop back to the agent, communicating learning from performance without drawing numerical results. The clock may turn very slightly; keep the grid structure stable. From 8–10 seconds, settle all cards and carry a red accent toward the outer right edge, matching the border accent of the following client evidence scene. Camera almost locked, with only a subtle forward drift. No publication confirmation or claim of publishing without approval.
+
+EXACT NARRATION
+"It learns your audience, plans the cadence, and schedules approved content—then uses performance signals to refine the next batch."
+

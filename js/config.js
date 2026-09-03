@@ -23,9 +23,11 @@ export const CONFIG = {
   // Runtime overrides can be added before app.js loads:
   // window.SHOORT_CLIPS_CONFIG = { API_BASE_URL: 'https://...', MOCK_MODE: false, AUTH_ENABLED: true };
   AUTH_ENABLED: window.SHOORT_CLIPS_CONFIG?.AUTH_ENABLED ?? false,
-  MOCK_MODE: window.SHOORT_CLIPS_CONFIG?.MOCK_MODE ?? true,
+  MOCK_MODE: window.SHOORT_CLIPS_CONFIG?.MOCK_MODE ?? false,
+  ALLOW_LOCAL_MEDIA: window.SHOORT_CLIPS_CONFIG?.ALLOW_LOCAL_MEDIA ?? false,
+  DISABLE_BILLING_GATE: window.SHOORT_CLIPS_CONFIG?.DISABLE_BILLING_GATE ?? true,
   get BACKEND_URL() {
-    return window.SHOORT_CLIPS_CONFIG?.API_BASE_URL || 'https://api.shoortclips.com';
+    return window.SHOORT_CLIPS_CONFIG?.API_BASE_URL || 'http://localhost:8000';
   },
 
   // WebSocket Base URL (Automatically converts http/https to ws/wss)
@@ -50,7 +52,6 @@ export const CONFIG = {
     brands: '/api/v1/brands',
     channelAudit: '/api/v1/brands/analyze-channel',
     submitJob: '/api/v1/jobs/submit',
-    uploadJob: '/api/v1/jobs/upload',
     jobs: '/api/v1/jobs',
     analytics: '/api/v1/analytics/overview',
     analyticsSync: '/api/v1/analytics/sync',

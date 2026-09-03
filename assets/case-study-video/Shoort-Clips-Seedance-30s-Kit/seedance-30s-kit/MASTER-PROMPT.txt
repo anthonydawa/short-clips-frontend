@@ -1,0 +1,37 @@
+Create one cohesive 30-second, 16:9 commercial for Shoort Clips, with synchronized speech, music and sound design. This is a fast, human, practical creator-tech advertisement for a landing page. Make the viewer understand the product and want to try it.
+
+PRODUCT AND AUDIENCE
+Shoort Clips helps YouTube creators repurpose existing long-form videos into Shorts. Its agentic AI identifies useful moments, cuts vertical clips, plans posting frequency and timing around the audience, schedules approved content, and uses performance feedback to improve future decisions. The core benefit is less repetitive editing and scheduling, and more time to create. Sell autopilot with creator control—not guaranteed growth or instant virality. Approval comes before scheduling. Shoort Clips is independent software, not an official YouTube product.
+
+REFERENCE ROLES
+01-creator-casting.png: fictional adult presenter identity, wardrobe, natural lighting and home-studio setting. Use her in new camera angles and actions, not as a still photograph to zoom.
+02-brand-art-direction.png: palette, texture and typography direction ONLY. Never display or animate the moodboard as a scene.
+03-workflow-reference.png: simplified illustrative workspace. Show its source-video, vertical-clip and schedule concepts through readable screen inserts. It is not a real product capture or client evidence.
+04-official-brand-mark.png: authoritative logo reference for the end card.
+These references are not a storyboard or mandatory opening frames. Choose fresh compositions. If no permitted casting reference is attached, use one consistent adult woman with shoulder-length dark hair, a charcoal shirt and a natural, approachable presence.
+
+CREATIVE DIRECTION
+Aim for approximately 12–16 purposeful shots, mostly 1–2.5 seconds each. Begin with the human hook immediately. Alternate presenter, over-the-shoulder views, hands, practical camera details, and clean screen inserts. Use quick hard cuts, occasional motivated match cuts and short controlled camera moves. Hold key interface actions long enough to understand. Energy should come from useful actions and rhythmic editing, not constant zooming. Keep one consistent woman, room, wardrobe and source-video subject throughout.
+
+Natural daylight, honest skin and fabric texture, warm wood, cream #FBFAF7, ink #111111 and restrained red #FF2D2D. Clean geometric sans-serif typography. Confident, contemporary and lively, not a glossy corporate stock montage.
+
+STORY BEATS — APPROXIMATE, NOT RIGID
+0–4 seconds: the woman addresses the viewer with a knowing, conversational hook. Cut to an existing long-form video library and the editing work waiting for her. No fake failure metrics.
+4–14 seconds: introduce Shoort Clips. Clearly demonstrate one source video becoming vertical Shorts: a selected timeline moment, a portrait crop and a small batch ready for review. Keep the source footage recognizable across each step.
+14–22 seconds: one approval action, followed by the approved clips appearing in a weekly schedule and Autopilot enabled. Convey ongoing learning with a simple feedback/status cue, not a fabricated growth graph.
+22–27 seconds: the same creator confidently gets back to recording while the approved workflow continues. Show time regained, not a claim that no creator decisions are ever needed.
+27–30 seconds: settle into a clean, readable end card using the supplied logo, “Less editing. More creating.” and “shoortclips.com”.
+
+You have freedom to choose camera angles, shot order within each beat, transitions and visual wit. Preserve the product explanation, approval sequence, exact narration and closing CTA.
+
+VOICE AND SOUND
+One female voice throughout: warm, clear, assured and lightly playful, conversational mid register, natural international English. Brisk but unhurried, approximately 145–155 words per minute with brief natural pauses. Speak the narration exactly once, beginning near 0.2 seconds and finishing before 29.5 seconds. The presenter speaks the opening question with synchronized lips; the same voice continues over B-roll. No other dialogue.
+Pronounce “Shoort Clips” as “Short Clips”, and the URL as “short clips dot com”.
+Use a restrained upbeat instrumental around 120 BPM, without vocals, plus sparse tactile click/cut sounds. Keep all music and effects comfortably below the voice.
+
+EXACT NARRATION
+“Great videos. No time for Shorts? Meet Shoort Clips—your agentic AI for YouTube. It finds your strongest moments, cuts your Shorts, and plans when and how often to post around your audience. Approve the batch. Then let autopilot handle the schedule and learn from every release. You keep creating. Your agent keeps working. Put your Shorts workflow on autopilot at shoortclips dot com.”
+
+GUARDRAILS
+Keep interfaces flat, stable and contained on screens. No morphing screens, melting faces, floating panels, robots, holograms, glowing AI cubes, animated analytics, invented customer results, testimonials, view counts or subscriber counts.
+Minimal on-screen wording; no dense labels or automatic full-sentence subtitles. Permitted short labels include “Source”, “Shorts”, “Approve”, “Schedule” and “Autopilot”. Preserve the exact brand spelling: Shoort Clips and shoortclips.com, with two o's in “shoort”. No YouTube endorsement or YouTube-branded end card. End cleanly with the CTA visible, not a fade to black.

@@ -3,11 +3,20 @@
   RewriteEngine On
   RewriteBase /
 
-  # Public preview: product, signup, and payment pages stay offline.
-  RewriteRule ^(?:app|register|trial-register|payment-success)\.html$ / [R=302,L,NE]
+  # Clean routing for demo, app, and pages
+  RewriteRule ^demo/?$ demo.html [L,QSA]
+  RewriteRule ^app/?$ app.html [L,QSA]
+  RewriteRule ^free-trial/?$ free-trial.html [L,QSA]
+  RewriteRule ^register/?$ register.html [L,QSA]
+  RewriteRule ^trial-register/?$ trial-register.html [L,QSA]
+  RewriteRule ^payment-success/?$ payment-success.html [L,QSA]
+
+  # Do not rewrite real files or directories
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
+
+  # Fallback
   RewriteRule ^ index.html [L]
 </IfModule>
 

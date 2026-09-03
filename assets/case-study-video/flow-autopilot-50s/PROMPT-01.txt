@@ -1,0 +1,20 @@
+Create one 10-second, 16:9 landscape shot for a five-part Shoort Clips product-launch film. Use the attached PNG as this shot's main visual and composition reference, and begin as close to that composition as possible. This is an illustrative product film, not footage of a real physical device or a literal software interface.
+
+STYLE AND CONTINUITY
+Premium, clean technology product presentation. Warm cream #FBFAF7, deep ink #111111, signature red #FF2D2D. Preserve the reference's materials, proportions, logo, object identities and arrangement. Controlled motion, smooth easing, soft studio lighting, restrained red signal paths, no neon sci-fi overload. Match these qualities across the five separately generated scenes. No YouTube corporate branding or suggestion of YouTube endorsement. No visual metric claims except the unaltered evidence in shot 4.
+
+AUDIO
+Use the same attached saved voice reference for every shot, as an off-screen narrator. Warm, confident medium-low male voice; neutral international English with clear American-style diction. Professional product-launch delivery, conversational and assured, energetic without shouting. Aim for approximately 150–165 words per minute, adjusting naturally so the complete line fits within this shot. Start near 0.2 seconds and finish by 9.5 seconds. Pronounce Shoort Clips as "Short Clips" and shoortclips dot com as "short clips dot com." Speak only the exact narration below, verbatim. No visible speaker, no lip-sync, no additional dialogue, no music, no sound effects, no ambient noise. Do not change voices between sentences.
+
+TEXT AND OUTPUT
+Do not generate subtitles, new titles, watermarks, text overlays, URLs, or button labels. Preserve any existing text in a supplied evidence screenshot. Editorial typography will be added after generation. No scene cuts within this shot, no fade-to-black, no extra end card.
+
+SHOT 01: PUT IT ON AUTOPILOT
+REFERENCE IMAGE: 01-autopilot-opening.png
+
+ACTION
+Begin with the composition of the attached reference: the landscape source video at left, the glossy black Shoort Clips agent at center, and vertical clip cards at right. From 0–2 seconds, illuminate the small red autopilot indicator and the agent's existing logo with one restrained light pulse. From 2–7 seconds, carry that red pulse from the landscape video through the agent toward the three vertical cards; gently lift the cards a small distance without changing their contents. Use a very slow, subtle forward camera drift. From 7–10 seconds, settle the cards and send one red light pulse to the right edge, preparing a clean cut into the clipping scene. Keep the logo geometry fixed. No new interface labels.
+
+EXACT NARRATION
+"Put your YouTube workflow on autopilot. Meet Shoort Clips—your agentic AI for turning long videos into a consistent Shorts strategy."
+

@@ -33,16 +33,38 @@ export function renderNavbar(container) {
           <svg class="topbar-signin-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
         </button>`;
 
+    const autopilotControl = `
+      <div class="topbar-autopilot ${state.autopilot ? 'autopilot-active' : ''}" id="topbar-autopilot-widget" title="Toggle autonomous clip approval & scheduling to calendar">
+        <span class="autopilot-dot"></span>
+        <div class="autopilot-copy">
+          <span class="autopilot-kicker">AUTOPILOT</span>
+          <strong class="autopilot-status-text">${state.autopilot ? 'ON' : 'OFF'}</strong>
+        </div>
+        <button type="button" class="autopilot-switch ${state.autopilot ? 'on' : ''}" id="btn-toggle-autopilot" role="switch" aria-checked="${state.autopilot ? 'true' : 'false'}" aria-label="Toggle Autopilot Mode">
+          <i></i>
+        </button>
+      </div>
+    `;
+
     container.innerHTML = `
       <div class="navbar-container">
         <div class="topbar-copy"><h2>Growth workspace</h2><p>Agent status: ${agentStatus}</p></div>
         <div class="nav-actions">
+          ${autopilotControl}
           ${upgradeControl}
           <button class="topbar-tool" id="btn-open-analytics" title="View channel analytics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17V7m0 10h14M8 14l3-3 2 2 5-6"></path></svg><span>Analytics</span></button>
           ${accountControl}
         </div>
       </div>`;
 
+    container.querySelector('#btn-toggle-autopilot')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const next = !state.autopilot;
+      state.setAutopilot(next);
+      window.dispatchEvent(new CustomEvent('SHOW_TOAST', {
+        detail: next ? '⚡ Autopilot active: Ready clips will automatically approve and sync to your calendar.' : 'Autopilot paused: Manual review mode enabled.'
+      }));
+    });
     container.querySelector('#btn-upgrade-plan')?.addEventListener('click', () => window.dispatchEvent(new CustomEvent('START_CHECKOUT')));
     container.querySelector('#btn-open-analytics')?.addEventListener('click', () => {
       if (state.userAccess?.is_active === false) window.dispatchEvent(new CustomEvent('START_CHECKOUT'));
@@ -52,6 +74,6 @@ export function renderNavbar(container) {
     container.querySelector('#btn-auth-logout')?.addEventListener('click', async () => { await signOut(); state.setUser(null); });
   }
 
-  state.subscribe((_, action) => { if (['USER_CHANGED', 'USER_ACCESS_CHANGED', 'BRANDS_UPDATED', 'ACTIVE_BRAND_CHANGED', 'ANALYTICS_UPDATED'].includes(action)) update(); });
+  state.subscribe((_, action) => { if (['USER_CHANGED', 'USER_ACCESS_CHANGED', 'BRANDS_UPDATED', 'ACTIVE_BRAND_CHANGED', 'ANALYTICS_UPDATED', 'AUTOPILOT_CHANGED'].includes(action)) update(); });
   update();
 }

@@ -1,6 +1,10 @@
 # Shoort Clips frontend API contract
 
-The frontend ships in safe demo mode. Every product action uses the same client that will connect to the Google Cloud editing service, but returns local demo responses until the real API is enabled.
+**Canonical backend implementation request:** see [backend-handoff/README.md](backend-handoff/README.md) and [backend-handoff/openapi.json](backend-handoff/openapi.json). That package covers the complete endpoint/function/cloud requirements and the client changes needed before live activation. This page is a frontend quick reference, not a complete server specification.
+
+The frontend ships in preview mode (`MOCK_MODE: true`). Reads return empty preview data; processing, uploads, channel analysis, and scheduling report that the service is not connected. This repository does not contain a Python server, deployed API, or an R2 bucket setup.
+
+Cloudflare R2 is the intended media store; Google Cloud runs the Python processing service. The browser-side multipart upload and media handling are implemented against the **pending** contract in [R2_FRONTEND_CONTRACT.md](R2_FRONTEND_CONTRACT.md). They have not been tested against a live R2 bucket.
 
 ## Enable the Google Cloud API
 
@@ -32,15 +36,15 @@ For email/password testing, make sure the Email provider is enabled. If **Confir
 
 ## User access types
 
-Run `SUPABASE_USER_ACCESS_SETUP.sql` once in the SQL Editor for the Supabase project used by the frontend. It creates a protected `user_access` table and automatically gives every existing and future account active `test_user` access.
+The repository contains historical `SUPABASE_USER_ACCESS_SETUP.sql`, but **do not use it unchanged for production**: its trigger can grant access from user-editable signup metadata. The backend handoff requires a trusted invitation/trial/payment grant flow, corrected migrations, and reconciliation of existing access rows before live processing is enabled.
 
 Supported access types:
 
-- `test_user` — current default during product development.
-- `free_trial` — assign manually after accepting a free-trial request.
-- `paid` — assign after payment is verified.
+- `test_user` — explicitly granted by a trusted administrator/invitation flow, never by client signup metadata.
+- `free_trial` — granted by the approved server-side eligibility flow, with an enforced expiry.
+- `paid` — active only for the verified paid-through period, subject to suspension/reconciliation.
 
-Users can read their own access row but cannot change their own access type or activation status. Change access from the Supabase Table Editor, or execute an admin-only update in the SQL Editor:
+Users can read their own access row but cannot change their own access type or activation status. The builder must use a trusted audited grant procedure and maintain grant provenance; a direct row update alone should not become the permanent authorization model. Historical example of an administrator-only update:
 
 ```sql
 update public.user_access
@@ -50,9 +54,9 @@ where user_id = 'THE_AUTH_USER_UUID';
 
 When the Google Cloud processing API is connected, it must validate the Supabase JWT and check `user_access.is_active` server-side before accepting a video job. The frontend access check is for user experience only and is not a security boundary.
 
-The Supabase connection remains in `js/config.js`. Authentication is disabled at startup for the current preview, but the existing email/password and Google OAuth modal is preserved and can be activated with `AUTH_ENABLED: true`.
+The Supabase connection remains in `js/config.js`. `app.html` enables authentication by default, independently of processing preview mode.
 
-## Ready endpoints
+## Required backend endpoints (not implemented in this repository)
 
 | Purpose | Method | Endpoint |
 | --- | --- | --- |
@@ -60,7 +64,11 @@ The Supabase connection remains in `js/config.js`. Authentication is disabled at
 | List/create brands | GET/POST | `/api/v1/brands` |
 | Analyze a channel | POST | `/api/v1/brands/analyze-channel` |
 | Submit YouTube job | POST | `/api/v1/jobs/submit` |
-| Upload source video | POST multipart | `/api/v1/jobs/upload` |
+| Initialize R2 multipart upload | POST JSON | `/api/v1/uploads` |
+| Sign one R2 upload part | POST | `/api/v1/uploads/{upload_id}/parts/{part_number}` |
+| Complete upload | POST JSON | `/api/v1/uploads/{upload_id}/complete` |
+| Cancel/clean up upload | DELETE | `/api/v1/uploads/{upload_id}` |
+| Submit uploaded source | POST JSON | `/api/v1/jobs/submit` with `source_upload_id` |
 | List jobs | GET | `/api/v1/jobs` |
 | Job detail and clips | GET | `/api/v1/jobs/{video_id}` |
 | Job progress | WebSocket | `/api/v1/ws/jobs/{video_id}` |
@@ -69,7 +77,9 @@ The Supabase connection remains in `js/config.js`. Authentication is disabled at
 | Save test schedule | PUT | `/api/v1/schedule` |
 | YouTube OAuth status | GET | `/api/v1/auth/youtube/status` |
 
-Authenticated requests send the Supabase access token as `Authorization: Bearer <token>`. Uploads use `FormData`; all other writes send JSON.
+Authenticated API requests send the Supabase access token as `Authorization: Bearer <token>`. Writes use JSON. File bytes go directly to signed R2 URLs in raw `PUT` requests, without Supabase tokens or cookies. The old `POST multipart /api/v1/jobs/upload` path is no longer used by the frontend.
+
+Additional existing client calls cover brand detail/update/delete, job clips/retry/delete, storage health/sync, billing, and YouTube connect/disconnect. These are also client contracts, not implemented server routes. Before implementing the Python API, inventory `js/api.js` and `CREEM_INTEGRATION.md`, including the required callback/webhook handlers. Job progress authentication is still pending: the current WebSocket client has no authentication handshake and must not be enabled against a public production stream without one.
 
 ## Expected job response
 

@@ -3,6 +3,7 @@
  */
 
 import { state } from '../state.js';
+import { escapeHtml } from '../media.js';
 
 const STAGES = [
   { id: 'INGESTION', label: 'Source received', icon: '1' },
@@ -21,7 +22,7 @@ export function renderProgressTracker(container) {
 
   function update() {
     const progress = state.progress;
-    const isVisible = state.isProcessing || progress.stage === 'COMPLETED' || progress.stage === 'FAILED';
+    const isVisible = state.isProcessing || ['COMPLETED', 'PARTIAL', 'FAILED'].includes(progress.stage);
 
     if (!isVisible) {
       container.style.display = 'none';
@@ -35,7 +36,7 @@ export function renderProgressTracker(container) {
       let statusClass = '';
       if (progress.stage === 'COMPLETED' || idx < currentIdx) {
         statusClass = 'completed';
-      } else if (idx === currentIdx) {
+      } else if (idx === currentIdx && progress.stage !== 'FAILED' && progress.stage !== 'PARTIAL') {
         statusClass = 'active';
       }
 
@@ -48,7 +49,7 @@ export function renderProgressTracker(container) {
     }).join('');
 
     const logEntries = progress.logs.length > 0
-      ? progress.logs.map((l) => `<div class="log-entry"><span style="color: var(--text-muted);">[${l.time}]</span> <span class="stage">[${l.stage}]</span> ${l.message}</div>`).join('')
+      ? progress.logs.map((l) => `<div class="log-entry"><span style="color: var(--text-muted);">[${escapeHtml(l.time)}]</span> <span class="stage">[${escapeHtml(l.stage)}]</span> ${escapeHtml(l.message)}</div>`).join('')
       : '<div class="log-entry" style="color: var(--text-muted);">Waiting for processing updates…</div>';
 
     container.innerHTML = `
@@ -56,19 +57,19 @@ export function renderProgressTracker(container) {
         <div class="progress-header">
           <div style="display: flex; align-items: center; gap: 12px;">
             <div class="badge ${progress.stage === 'COMPLETED' ? 'badge-emerald' : progress.stage === 'FAILED' ? 'badge-rose' : 'badge-purple anim-pulse'}">
-              ${progress.stage || 'PROCESSING'}
+              ${escapeHtml(progress.stage || 'PROCESSING')}
             </div>
             <div style="font-weight: 700; font-size: 16px;">
-              ${progress.message || 'Processing your video…'}
+              ${escapeHtml(progress.message || 'Processing your video…')}
             </div>
           </div>
           <div style="font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--primary);">
-            ${Math.round(progress.percent)}%
+            ${progress.stage === 'FAILED' ? 'Stopped' : `${Math.round(progress.percent)}%`}
           </div>
         </div>
 
         <!-- Progress Bar -->
-        <div class="progress-bar-wrap">
+        <div class="progress-bar-wrap" ${progress.stage === 'FAILED' ? 'hidden' : ''}>
           <div class="progress-bar-fill" style="width: ${progress.percent}%;"></div>
         </div>
 

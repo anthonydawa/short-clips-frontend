@@ -1,0 +1,11 @@
+{
+  "event_id": 8,
+  "video_id": "vid_example",
+  "stage": "RENDERING_CLIPS",
+  "progress": 75,
+  "message": "Rendered 3 of 5 clips.",
+  "status": "processing",
+  "requested_clip_count": 5,
+  "generated_clip_count": 3,
+  "occurred_at": "2026-08-31T08:00:00Z"
+}

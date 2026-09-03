@@ -1,0 +1,20 @@
+Create one 10-second, 16:9 shot for a realistic Shoort Clips creator-product advertisement. Use the attached numbered image as the primary composition and identity reference. Begin as close to its composition as possible.
+
+ART DIRECTION
+Recognizable creator life and useful software interactions. Real photographic footage where people appear; crisp flat software capture where interfaces appear. Daylight, natural skin and fabric texture, neutral whites and cream, near-black type, restrained functional red. Clean and confident, like a practical creator-tool demonstration. No glossy AI devices, robots, floating cubes, holograms, neon trails, floating UI, 3D interface extrusion or dramatic lens flares. Preserve the supplied face, clothing, room, layout and existing labels. The editor and calendar are simplified illustrative Shoort Clips screens; never present them as native YouTube controls or imply YouTube endorsement.
+
+AUDIO
+Use the same attached saved male narrator voice for all five clips. Warm, clear, conversational medium-low register, neutral international English, approximately 150–165 words per minute. Sound like a knowledgeable creator explaining a useful tool, not a movie trailer or aggressive sales pitch. Start near 0.2 seconds and finish by 9.5 seconds. Speak the exact narration below once and only once. Pronounce Shoort Clips as "Short Clips" and shoortclips dot com as "short clips dot com." No extra words. The woman is silent B-roll, never the narrator. No music, sound effects or ambient sound in this generation; a single continuous music bed can be added later.
+
+TEXT AND CAMERA
+Do not invent subtitles, titles, URLs, watermarks, statistics or dense labels. Keep existing UI text stable. Headline overlays will be added editorially for exact spelling. One controlled shot; only the action below. No internal cuts, no scene morphing, no fade to black. Leave the final half-second visually settled for the next shot.
+
+SCENE 04 — A SEPARATE, REAL CLIENT EXAMPLE
+PRIMARY REFERENCE: 04-real-client-analytics.jpg
+
+ACTION
+This reference is an authentic screenshot extracted from the user's client recording, not a UI illustration. It belongs to a DIFFERENT channel from the fictional woman in the surrounding shots. Use the supplied screenshot as one fixed documentary image. Keep its original YouTube Studio interface, all numbers, date range, graph, sidebar, channel identity and cursor exactly unchanged. Present it full-frame with a locked camera for the entire ten seconds. No graph drawing, no growing subscriber counter, no scrolling, no invented cursor click, no new tooltip, no glow, no rebuilt dashboard and no AI restyling. Preserve the full annual growth curve, the Last 365 days label, Aug 24, 2025–Aug 23, 2026, the headline 42,070 views, the 42.1K view card, 1.5K watch hours and +124 subscribers. Do not relabel this as year-to-date or three-month results. Do not add a date marking when the engagement started. The editorial transition into and out of this evidence shot will be a plain hard cut. Speak the supplied narrator line while the genuine screenshot stays completely still. Do not carry the fictional creator's face or workspace into this shot.
+
+EXACT NARRATION
+"One client added repurposed Shorts and saw momentum. Their annual channel totals: over forty-two thousand views and one hundred twenty-four subscribers gained."
+

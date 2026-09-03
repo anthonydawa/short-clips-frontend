@@ -1,0 +1,20 @@
+Create one 10-second, 16:9 shot for a realistic Shoort Clips creator-product advertisement. Use the attached numbered image as the primary composition and identity reference. Begin as close to its composition as possible.
+
+ART DIRECTION
+Recognizable creator life and useful software interactions. Real photographic footage where people appear; crisp flat software capture where interfaces appear. Daylight, natural skin and fabric texture, neutral whites and cream, near-black type, restrained functional red. Clean and confident, like a practical creator-tool demonstration. No glossy AI devices, robots, floating cubes, holograms, neon trails, floating UI, 3D interface extrusion or dramatic lens flares. Preserve the supplied face, clothing, room, layout and existing labels. The editor and calendar are simplified illustrative Shoort Clips screens; never present them as native YouTube controls or imply YouTube endorsement.
+
+AUDIO
+Use the same attached saved male narrator voice for all five clips. Warm, clear, conversational medium-low register, neutral international English, approximately 150–165 words per minute. Sound like a knowledgeable creator explaining a useful tool, not a movie trailer or aggressive sales pitch. Start near 0.2 seconds and finish by 9.5 seconds. Speak the exact narration below once and only once. Pronounce Shoort Clips as "Short Clips" and shoortclips dot com as "short clips dot com." No extra words. The woman is silent B-roll, never the narrator. No music, sound effects or ambient sound in this generation; a single continuous music bed can be added later.
+
+TEXT AND CAMERA
+Do not invent subtitles, titles, URLs, watermarks, statistics or dense labels. Keep existing UI text stable. Headline overlays will be added editorially for exact spelling. One controlled shot; only the action below. No internal cuts, no scene morphing, no fade to black. Leave the final half-second visually settled for the next shot.
+
+SCENE 05 — GIVE THE CREATOR TIME BACK
+PRIMARY REFERENCE: 05-creator-back-to-recording.png
+
+ACTION
+Return to the SAME fictional creator and home studio from scene 1, using this supplied closing composition. She is now recording her next educational video to the real camera on the tripod, not reacting to the previous client's analytics. 0–3 seconds: one small natural explanatory hand gesture and a relaxed expression; she looks into her recording camera. 3–6 seconds: a gentle breathing movement and almost imperceptible camera drift create believable live-action B-roll. The camera and tripod remain physically stable. 6–10 seconds: settle into a calm composition with only subtle natural movement. Keep the left cream wall clear so the editor can display the CTA for at least the final three seconds. The laptop stays on the desk, no floating interface overlays. No newly generated URL, slogan or logo; these will be typeset in the editor. No testimonial, no mouthed sales line, no lip-sync to the narrator. Do not end on black.
+
+EXACT NARRATION
+"Less time editing. More time creating. Let your agent handle the Shorts and the schedule. Get started at shoortclips dot com."
+

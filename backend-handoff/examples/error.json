@@ -1,0 +1,6 @@
+{
+  "detail": "Upload the source video file to process this video.",
+  "code": "SOURCE_UPLOAD_REQUIRED",
+  "request_id": "req_example",
+  "retryable": false
+}

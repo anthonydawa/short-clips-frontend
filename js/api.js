@@ -5,6 +5,8 @@
 
 import { CONFIG } from './config.js';
 import { getAccessToken } from './supabase.js';
+import { getMediaUrl } from './media.js';
+import { uploadSourceVideo } from './uploads.js';
 
 const wait = (ms = 350) => new Promise((resolve) => window.setTimeout(resolve, ms));
 
@@ -21,10 +23,14 @@ async function mockRequest(endpoint, options = {}) {
   if (endpoint === CONFIG.ENDPOINTS.channelAudit) throw new Error('Channel analysis server is not connected yet.');
   if (endpoint.startsWith(CONFIG.ENDPOINTS.brands) && options.method === 'POST') return { ...body, brand_id: body.brand_id || `brand_${Date.now()}` };
   if (endpoint === CONFIG.ENDPOINTS.brands || endpoint.startsWith(`${CONFIG.ENDPOINTS.brands}?`)) return [];
-  if (endpoint === CONFIG.ENDPOINTS.submitJob || endpoint === CONFIG.ENDPOINTS.uploadJob) throw new Error('Video processing server is not connected yet.');
+  if (endpoint === CONFIG.ENDPOINTS.submitJob) throw new Error('Video processing server is not connected yet.');
+  if (endpoint.startsWith('/api/v1/uploads')) throw new Error('Cloud storage uploads are not connected yet.');
+  if (endpoint === '/api/v1/storage/health') return { configured: false, provider: 'r2' };
   if (endpoint === CONFIG.ENDPOINTS.analytics || endpoint.includes('/auth/youtube/analytics')) return null;
   if (endpoint.includes('/auth/youtube/status')) return { connected: false, is_connected: false };
-  if (endpoint === CONFIG.ENDPOINTS.schedule) throw new Error('Scheduling server is not connected yet.');
+  if (endpoint.includes('/approval')) return { status: body.decision || 'approved', approved_version: body.expected_version || 1, ...body };
+  if (endpoint.includes('/approvals')) return { approved_count: body.clips?.length || 1, decision: body.decision || 'approved' };
+  if (endpoint === CONFIG.ENDPOINTS.schedule) return { frequency: 'daily_1', test_mode: false, approval_mode: body.approval_mode || 'manual_every_clip', auto_fill: body.auto_fill ?? false, ...body };
   if (endpoint.startsWith(CONFIG.ENDPOINTS.jobs)) return endpoint.match(/\/jobs\/[^/]+$/) ? { job: null, clips: [] } : [];
   throw new Error('This server endpoint is not connected yet.');
 }
@@ -60,10 +66,15 @@ async function request(endpoint, options = {}) {
       } catch (e) {
         errorData = { detail: response.statusText };
       }
-      throw new Error(errorData.detail || errorData.message || `API Request Failed: ${response.status}`);
+      const detail = Array.isArray(errorData.detail)
+        ? errorData.detail.map((item) => item.msg || 'Invalid request').join('; ')
+        : errorData.detail;
+      throw new Error(detail || errorData.message || `API Request Failed: ${response.status}`);
     }
 
-    return await response.json();
+    if (response.status === 204) return null;
+    const text = await response.text();
+    return text ? JSON.parse(text) : null;
   } catch (err) {
     console.error(`API error [${endpoint}]:`, err);
     throw err;
@@ -112,10 +123,15 @@ export const api = {
     method: 'POST',
     body: JSON.stringify(payload),
   }),
-  uploadVideo: (formData) => request('/api/v1/jobs/upload', {
-    method: 'POST',
-    body: formData,
-  }),
+  uploadVideo: async (file, payload, options) => {
+    const sourceUploadId = await uploadSourceVideo(file, request, options);
+    options?.onUploaded?.();
+    // Only the server-owned upload reference goes to Cloud Run, never bytes
+    // or a client-chosen bucket/key. Do not automatically retry job creation.
+    return request(CONFIG.ENDPOINTS.submitJob, {
+      method: 'POST', body: JSON.stringify({ ...payload, source_upload_id: sourceUploadId }),
+    });
+  },
   getJobs: (brandId = '', limit = 50) => {
     const query = brandId ? `?brand_id=${brandId}&limit=${limit}` : `?limit=${limit}`;
     return request(`/api/v1/jobs${query}`);
@@ -124,6 +140,24 @@ export const api = {
   getJobClips: (videoId) => request(`/api/v1/jobs/${videoId}/clips`),
   retryJob: (videoId) => request(`/api/v1/jobs/${videoId}/retry`, { method: 'POST' }),
   deleteJob: (videoId) => request(`/api/v1/jobs/${videoId}`, { method: 'DELETE' }),
+
+  // Clips
+  getClips: (limit = 100) => request(`/api/v1/clips?limit=${limit}`),
+  getClip: (clip_uid) => request(`/api/v1/clips/${clip_uid}`),
+  updateClip: (clip_uid, payload) => request(`/api/v1/clips/${clip_uid}`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  deleteClip: (clip_uid) => request(`/api/v1/clips/${clip_uid}`, { method: 'DELETE' }),
+  approveClip: (clip_uid, payload = { decision: 'approved' }) => request(`/api/v1/clips/${clip_uid}/approval`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }),
+  approveClipBatch: (payload) => request('/api/v1/clips/approvals', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }),
+  renderClip: (clip_uid, payload) => request(`/api/v1/clips/${clip_uid}/render`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }),
 
   // Storage & Analytics
   getStorageHealth: () => request('/api/v1/storage/health'),
@@ -144,6 +178,7 @@ export const api = {
   },
 
   // Agent test schedule
+  getSchedule: () => request(CONFIG.ENDPOINTS.schedule),
   updateSchedule: (payload) => request(CONFIG.ENDPOINTS.schedule, { method: 'PUT', body: JSON.stringify(payload) }),
 
   // YouTube Channel OAuth Integration
@@ -156,23 +191,8 @@ export const api = {
 
 
 
-  // URL Helper to resolve playable video URL (R2 cloud or local workspace streaming)
-  getVideoStreamUrl: (clip, jobSlug) => {
-    if (!clip) return '';
-    if (clip.r2_video_url) return clip.r2_video_url;
-    const filename = clip.video_path ? clip.video_path.split(/[\\/]/).pop() : '';
-    if (!filename) return '';
-    const slug = jobSlug || clip.job_slug || `job_${clip.video_id}`;
-    return `${CONFIG.BACKEND_URL}/workspace/jobs/${slug}/05_clips/${filename}`;
-  },
-
-  // Helper for subtitle URL
-  getSubtitleStreamUrl: (clip, jobSlug) => {
-    if (!clip) return '';
-    if (clip.r2_subtitle_url) return clip.r2_subtitle_url;
-    const filename = clip.subtitle_path ? clip.subtitle_path.split(/[\\/]/).pop() : '';
-    if (!filename) return '';
-    const slug = jobSlug || clip.job_slug || `job_${clip.video_id}`;
-    return `${CONFIG.BACKEND_URL}/workspace/jobs/${slug}/05_clips/${filename}`;
-  }
+  getVideoStreamUrl: (clip, jobSlug) => getMediaUrl(clip, 'video', jobSlug),
+  getSubtitleStreamUrl: (clip, jobSlug) => getMediaUrl(clip, 'subtitles', jobSlug),
+  getThumbnailUrl: (clip) => getMediaUrl(clip, 'thumbnail'),
+  getDownloadUrl: (clip) => getMediaUrl(clip, 'download'),
 };

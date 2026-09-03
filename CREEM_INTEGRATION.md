@@ -1,5 +1,7 @@
 # Creem billing handoff
 
+The complete current implementation request is [backend-handoff/README.md](backend-handoff/README.md). Its trusted grant and webhook requirements supersede the historical signup-SQL instructions below. No billing endpoints are implemented here.
+
 Shoort Clips uses Creem's hosted checkout as a full-page redirect. Do not put the
 Creem API key or product ID logic in the browser, and do not unlock a workspace
 from success-page query parameters.
@@ -99,15 +101,16 @@ Frontend gating is only the user experience; it is not the security boundary.
 
 ## Supabase access states
 
-Run `SUPABASE_USER_ACCESS_SETUP.sql` in the Supabase SQL Editor after reviewing
-it. It produces these states:
+Do not run `SUPABASE_USER_ACCESS_SETUP.sql` unchanged for production: its
+signup trigger trusts editable metadata. Implement the audited grant/payment
+flow in `backend-handoff/cloud-setup.md`. Intended access states are:
 
 | Signup path | `access_type` | `is_active` | Result |
 | --- | --- | --- | --- |
-| Private trial page | `free_trial` | `true` | Dashboard opens for 30 days |
+| Server-approved private trial | `free_trial` | `true` | Dashboard opens for the approved 30-day trial |
 | Public registration | `paid` | `false` | Checkout required |
 | Verified Creem payment | `paid` | `true` | Dashboard unlocks |
-| Admin test account | `test_user` | `true` | Dashboard opens |
+| Trusted admin-granted test account | `test_user` | `true` | Dashboard opens |
 
 `public.user_access` is server-controlled and readable only by its owner. Never
 use editable `user_metadata` as the authorization decision.

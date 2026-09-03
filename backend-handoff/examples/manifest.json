@@ -1,0 +1,9 @@
+{
+  "submit-five-clips.json": "JobSubmit",
+  "job-accepted.json": "Job",
+  "job-completed-five-clips.json": "JobDetail",
+  "job-partial-three-clips.json": "JobDetail",
+  "progress-event.json": "JobEvent",
+  "analytics-empty.json": "AnalyticsOverview",
+  "error.json": "Error"
+}
