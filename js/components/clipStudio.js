@@ -71,7 +71,12 @@ export function renderClipStudio(container) {
       clipsByVideo[vId].push(clip);
     });
 
-    const videoIds = Object.keys(clipsByVideo);
+    // Sort source video categories newest first based on job/clip creation timestamp
+    const videoIds = Object.keys(clipsByVideo).sort((a, b) => {
+      const timeA = jobMap[a]?.created_at || clipsByVideo[a]?.[0]?.created_at || '';
+      const timeB = jobMap[b]?.created_at || clipsByVideo[b]?.[0]?.created_at || '';
+      return timeB.localeCompare(timeA);
+    });
 
     // Apply active source filter
     const visibleVideoIds = activeSourceVideo === 'all'
