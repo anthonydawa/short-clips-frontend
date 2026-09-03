@@ -52,7 +52,6 @@ export function renderVerticalPlayer(container) {
               ${thumbnail ? `poster="${thumbnail}"` : ''}
               playsinline
               preload="metadata"
-              crossorigin="anonymous"
             >
               ${subSrc ? `<track label="Subtitles" kind="subtitles" srclang="en" src="${subSrc}">` : ''}
             </video>

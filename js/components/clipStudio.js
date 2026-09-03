@@ -127,7 +127,6 @@ export function renderClipStudio(container) {
                   src="${videoSrc}"
                   preload="metadata"
                   playsinline
-                  crossorigin="anonymous"
                 ></video>
               ` : !thumbnail ? `
                 <div class="clip-missing-media">Video ready</div>
@@ -451,7 +450,18 @@ export function renderClipStudio(container) {
             });
             try {
               await video.play();
-            } catch (err) {}
+            } catch (err) {
+              console.warn('Unmuted play blocked by browser policy, retrying muted:', err);
+              video.muted = true;
+              try {
+                await video.play();
+                if (soundBtn) {
+                  soundBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`;
+                }
+              } catch (e2) {
+                console.error('Playback failed:', e2);
+              }
+            }
           } else {
             video.pause();
           }
